@@ -49,7 +49,7 @@ public class LessonsListControlador{
         ModelAndView mv = new ModelAndView("homepage");
        
         DriverManagerDataSource dataSource;
-        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
+        dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
         this.cn = dataSource.getConnection();
         HttpSession sesion = hsr.getSession();
         User user = (User) sesion.getAttribute("user");
@@ -80,47 +80,47 @@ public class LessonsListControlador{
 //        return mv;
 //    }
     
-    public ArrayList<Lessons> getLessons(int userid,ServletContext servlet) throws SQLException
+    public ArrayList<Classes> getLessons(int userid,ServletContext servlet) throws SQLException
     {
 //        this.conectarOracle();
-        ArrayList<Lessons> lessonslist = new ArrayList<>();
+        ArrayList<Classes> classeslist = new ArrayList<>();
         try {
             
              Statement st = this.cn.createStatement();
              
-            String consulta = "SELECT * FROM public.lessons where user_id = "+userid+" and COALESCE(idea, FALSE) = FALSE";
+            String consulta = "SELECT * FROM Classes where StaffID = "+userid;
             ResultSet rs = st.executeQuery(consulta);
           
             while (rs.next())
             {
-                Lessons lesson = new Lessons();
+                Classes cl = new Classes();
               //  lesson.setId(rs.getString("id_lessons"));
-                lesson.setName(rs.getString("name"));
-                lesson.setId(rs.getInt("id"));
+                cl.setName(rs.getString("Name"));
+                cl.setId(rs.getInt("ClassID"));
                 Level level = new Level();
-                String name = level.fetchName(rs.getInt("level_id"),servlet);
-               level.setName(name);
-                lesson.setLevel(level);
-                Objective sub = new Objective();
-                name = sub.fetchName(rs.getInt("objective_id"), servlet);
-                sub.setName(name);
-                lesson.setObjective(sub);
-                Subject subject = new Subject();
-                name = subject.fetchName(rs.getInt("subject_id"), servlet);
-                subject.setName(name);
-                lesson.setSubject(subject);
-                 Timestamp stamp = rs.getTimestamp("start");
-               Timestamp finish = rs.getTimestamp("finish");
-               SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-               SimpleDateFormat sdfTime = new SimpleDateFormat("hh:mm:ss a");
-               String dateStr = sdfDate.format(stamp);
-                String timeStr = sdfTime.format(stamp);
-                 
-                String timeStr2 = sdfTime.format(finish);
-                lesson.setDate(""+ dateStr);
-                lesson.setStart(timeStr);
-                lesson.setFinish(timeStr2);
-                lessonslist.add(lesson);
+              String name = null;//level.fetchName(rs.getInt("level_id"),servlet);
+               level.setName(rs.getString("GradeLevels"));
+                cl.setLevel(level);
+//                Category sub = new Category();
+//                name = sub.fetchName(rs.getInt("objective_id"), servlet);
+//                sub.setName(name);
+//                cl.setObjective(sub);
+                Course course = new Course();
+                name = course.fetchName(rs.getInt("CourseID"), servlet);
+                course.setName(name);
+                cl.setCourse(course);
+//                 Timestamp stamp = rs.getTimestamp("start");
+//               Timestamp finish = rs.getTimestamp("finish");
+//               SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+//               SimpleDateFormat sdfTime = new SimpleDateFormat("hh:mm:ss a");
+//               String dateStr = sdfDate.format(stamp);
+//                String timeStr = sdfTime.format(stamp);
+//                 
+//                String timeStr2 = sdfTime.format(finish);
+//                cl.setDate(""+ dateStr);
+//                cl.setStart(timeStr);
+//                cl.setFinish(timeStr2);
+                classeslist.add(cl);
                 
             }
            
@@ -131,7 +131,7 @@ public class LessonsListControlador{
             System.out.println("Error leyendo Alumnos: " + ex);
         }
        
-        return lessonslist;
+        return classeslist;
     }
 //     public ArrayList<Lessons> getLessonsTime(Lessons lessonselected,ServletContext servlet) throws SQLException
 //     {
@@ -291,7 +291,7 @@ public class LessonsListControlador{
            ResultSet rs = st.executeQuery(consulta);
        while(rs.next())
        {
-        Method m = new Method();
+        Criteria m = new Criteria();
        jsonObj.put("method",m.fetchName(rs.getInt("method_id"),hsr.getServletContext()));
        Timestamp date = rs.getTimestamp("date_created");
                SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");

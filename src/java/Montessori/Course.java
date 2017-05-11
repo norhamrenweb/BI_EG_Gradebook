@@ -14,29 +14,23 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-
-public class Content {
-    
+/**
+ *
+ * @author nmohamed
+ */
+public class Course {
     private String[] id;
     private String name;
-private String description;
-private Objective obj;
-Connection cn;
-    public Objective getObj() {
-        return obj;
+    Connection cn;
+    private ServletContext servlet;
+    
+    private Object getBean(String nombrebean, ServletContext servlet)
+    {
+        ApplicationContext contexto = WebApplicationContextUtils.getRequiredWebApplicationContext(servlet);
+        Object beanobject = contexto.getBean(nombrebean);
+        return beanobject;
     }
 
-    public void setObj(Objective obj) {
-        this.obj = obj;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
     public String[] getId() {
         return id;
     }
@@ -52,36 +46,30 @@ Connection cn;
     public void setName(String name) {
         this.name = name;
     }
-    private Object getBean(String nombrebean, ServletContext servlet)
-    {
-        ApplicationContext contexto = WebApplicationContextUtils.getRequiredWebApplicationContext(servlet);
-        Object beanobject = contexto.getBean(nombrebean);
-        return beanobject;
-    }
-         public String fetchName(int id, ServletContext servlet)
-    { String name = null ;
+    public String fetchName(int id, ServletContext servlet)
+    { String subjectName = null ;
         try {
              DriverManagerDataSource dataSource;
-        dataSource = (DriverManagerDataSource)this.getBean("dataSource",servlet);
+        dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",servlet);
         this.cn = dataSource.getConnection();
              Statement st = this.cn.createStatement();
              
-            String consulta = "SELECT name FROM public.content where id = "+id;
+            String consulta = "SELECT Title FROM AH_ZAF.dbo.Courses where CourseID = "+id;
             ResultSet rs = st.executeQuery(consulta);
           
             while (rs.next())
             {
-                name = rs.getString("name");
+                subjectName = rs.getString("Title");
                 
             }
             //this.finalize();
             
         } catch (SQLException ex) {
-            System.out.println("Error reading methods: " + ex);
+            System.out.println("Error : " + ex);
         }
        
-        return name;
+        return subjectName;
     
     }   
-   
+    
 }

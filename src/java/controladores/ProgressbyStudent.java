@@ -6,10 +6,10 @@
 package controladores;
 
 import Montessori.*;
-import Montessori.Method;
-import Montessori.Objective;
+import Montessori.Criteria;
+import Montessori.Category;
 import Montessori.Students;
-import Montessori.Subject;
+import Montessori.Course;
 import atg.taglib.json.util.JSONObject;
 import com.google.gson.Gson;
 import java.sql.Connection;
@@ -134,27 +134,27 @@ public class ProgressbyStudent {
         
         return mv;
     }
-    public List<Subject> getSubjects(String levelname) throws SQLException
+    public List<Course> getSubjects(String levelname) throws SQLException
     {
-        List<Subject> subjects = new ArrayList<>();
+        List<Course> subjects = new ArrayList<>();
          try {
             
              Statement st = this.cn.createStatement();
             
           ResultSet rs1 = st.executeQuery("select CourseID from Course_GradeLevel where GradeLevel= '"+levelname+"'");
-          Subject first = new Subject();
+          Course first = new Course();
           first.setName("Select Subject");
           subjects.add(first);
            while (rs1.next())
             {
-             Subject sub = new Subject();
+             Course sub = new Course();
              String[] ids = new String[1];
             ids[0]=""+rs1.getInt("CourseID");
              sub.setId(ids);
                 subjects.add(sub);
             }
            //loop through subjects to get their names, skipping the first 
-          for(Subject s:subjects.subList(1,subjects.size()))
+          for(Course s:subjects.subList(1,subjects.size()))
           {
               String[] ids = new String[1];
               ids=s.getId();
@@ -278,7 +278,7 @@ public class ProgressbyStudent {
     public ModelAndView newpage(HttpServletRequest hsr, HttpServletResponse hsr1, Model model) throws Exception
     {
          ModelAndView mv = new ModelAndView("progressdetails");
-            Objective o = new Objective();
+            Category o = new Category();
                  String[] hi = hsr.getParameterValues("data");
                  servlet = hsr.getServletContext();
                JSONObject jsonObj = new JSONObject(hi[0]);
@@ -513,7 +513,7 @@ while(rs5.next())
         } catch (SQLException ex) {
             System.out.println("Error leyendo Alumnos: " + ex);
         }
-     List<Subject> subjects = new ArrayList<>();
+     List<Course> subjects = new ArrayList<>();
      subjects = this.getSubjects(student.getLevel_id());
     String info = new Gson().toJson(student);
     String sub = new Gson().toJson(subjects);

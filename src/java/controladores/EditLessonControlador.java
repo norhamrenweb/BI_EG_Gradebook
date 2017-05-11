@@ -59,13 +59,13 @@ public class EditLessonControlador {
     @RequestMapping("/editlesson/start.htm")
     public ModelAndView start(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
        ModelAndView mv = new ModelAndView("editlesson");
-       Lessons data = new Lessons();
+       Classes data = new Classes();
        Level l = new Level();
-       ArrayList<Content> c = new ArrayList<>();
+       ArrayList<Assignment> c = new ArrayList<>();
        ArrayList<Students> stud = new ArrayList<>();
-        Objective o = new Objective();
-        Subject s = new Subject();
-        Method m = new Method();
+        Category o = new Category();
+        Course s = new Course();
+        Criteria m = new Criteria();
         String[] id = new String[1];
        DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -95,7 +95,7 @@ public class EditLessonControlador {
          }
          id = s.getId() ;
        s.setName(s.fetchName(Integer.parseInt(id[0]), hsr.getServletContext()));
-       data.setSubject(s);
+       data.setCourse(s);
        id=null;
        id = m.getId();
        m.setName(m.fetchName(Integer.parseInt(id[0]), hsr.getServletContext()));
@@ -110,11 +110,11 @@ public class EditLessonControlador {
        while(rs2.next())
        {
            id[0] = rs2.getString("content_id");
-           Content eq = new Content();
+           Assignment eq = new Assignment();
            eq.setId(id);
            c.add(eq);
        }
-       for(Content x:c)
+       for(Assignment x:c)
        {
        x.setName(x.fetchName(Integer.parseInt(id[0]), hsr.getServletContext()));
        }
@@ -142,14 +142,14 @@ public class EditLessonControlador {
        
        cn.close();
        mv.addObject("data",data);
-        mv.addObject("objectives",this.getObjectives(data.getSubject().getId()));
+        mv.addObject("objectives",this.getObjectives(data.getCourse().getId()));
                  mv.addObject("contents",this.getContent(data.getObjective().getId()));
                
                  cn.close();
                   dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
         this.cn = dataSource.getConnection();
                mv.addObject("subjects",this.getSubjects(data.getLevel().getId()));
-         List <Lessons> ideas = new ArrayList();
+         List <Classes> ideas = new ArrayList();
         dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
         this.cn = dataSource.getConnection();
         mv.addObject("listaAlumnos", this.getStudents());
@@ -173,13 +173,13 @@ public class EditLessonControlador {
         this.cn = dataSource2.getConnection();
          Statement st3 = this.cn.createStatement();
         ResultSet rs1 = st3.executeQuery("SELECT * FROM public.method");
-        List <Method> methods = new ArrayList();
-        Method me = new Method();
+        List <Criteria> methods = new ArrayList();
+        Criteria me = new Criteria();
         me.setName("Select Method");
         methods.add(me);
         while(rs1.next())
         {
-            Method x = new Method();
+            Criteria x = new Criteria();
              String[] ids = new String[1];
              ids[0]=""+rs1.getInt("id");
             x.setId(ids);
@@ -193,7 +193,7 @@ public class EditLessonControlador {
        ResultSet rs5 = st3.executeQuery("SELECT * FROM public.lessons where idea = true");
         while(rs5.next())
         {
-         Lessons idea = new Lessons();   
+         Classes idea = new Classes();   
         idea.setId(rs5.getInt("id")); 
         idea.setName(rs5.getString("name"));
         ideas.add(idea);
@@ -202,27 +202,27 @@ public class EditLessonControlador {
        return mv;
        
     }
-        public ArrayList<Subject> getSubjects(String[] levelid) throws SQLException
+        public ArrayList<Course> getSubjects(String[] levelid) throws SQLException
        {
            
-        ArrayList<Subject> subjects = new ArrayList<>();
+        ArrayList<Course> subjects = new ArrayList<>();
            Statement st = this.cn.createStatement();
              
           ResultSet rs1 = st.executeQuery("select CourseID from Course_GradeLevel where GradeLevel IN (select GradeLevel from GradeLevels where GradeLevelID ="+levelid[0]+")");
-           Subject s = new Subject();
+           Course s = new Course();
           s.setName("Select Subject");
           subjects.add(s);
            
            while (rs1.next())
             {
-             Subject sub = new Subject();
+             Course sub = new Course();
              String[] ids = new String[1];
             ids[0]=""+rs1.getInt("CourseID");
              sub.setId(ids);
             
                 subjects.add(sub);
             }
-           for(Subject su:subjects.subList(1,subjects.size()))
+           for(Course su:subjects.subList(1,subjects.size()))
           {
               String[] ids = new String[1];
               ids=su.getId();
@@ -234,22 +234,22 @@ public class EditLessonControlador {
           }
            return subjects;
        }
-        public ArrayList<Objective> getObjectives(String[] subjectid) throws SQLException
+        public ArrayList<Category> getObjectives(String[] subjectid) throws SQLException
        {
-           ArrayList<Objective> objectives = new ArrayList<>();
+           ArrayList<Category> objectives = new ArrayList<>();
        try {
         
              Statement st = this.cn.createStatement();
             
           ResultSet rs1 = st.executeQuery("select name,id from public.objective where subject_id="+subjectid[0]);
-          Objective s = new Objective();
+          Category s = new Category();
           s.setName("Select Objective");
           objectives.add(s);
            
            while (rs1.next())
             {
              String[] ids = new String[1];
-                Objective sub = new Objective();
+                Category sub = new Category();
             ids[0] = ""+rs1.getInt("id");
              sub.setId(ids);
              sub.setName(rs1.getString("name"));
@@ -262,9 +262,9 @@ public class EditLessonControlador {
         }
        return objectives;
        }
-        public ArrayList<Content> getContent(String[] objectiveid) throws SQLException
+        public ArrayList<Assignment> getContent(String[] objectiveid) throws SQLException
        {
-           ArrayList<Content> contents = new ArrayList<>();
+           ArrayList<Assignment> contents = new ArrayList<>();
        try {
         
              Statement st = this.cn.createStatement();
@@ -274,7 +274,7 @@ public class EditLessonControlador {
          
            while (rs1.next())
             {
-                Content eq = new Content();
+                Assignment eq = new Assignment();
                 String[] id= new String[1];
                id[0]= ""+rs1.getInt("id");
               

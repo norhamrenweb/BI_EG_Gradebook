@@ -18,11 +18,22 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author nmohamed
  */
-public class Subject {
-    private String[] id;
+public class Criteria {
+     private String[] id;
     private String name;
-    Connection cn;
+ Connection cn;
     private ServletContext servlet;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    private String description;
+      
+//      private ServletContext servlet;
     
     private Object getBean(String nombrebean, ServletContext servlet)
     {
@@ -30,7 +41,6 @@ public class Subject {
         Object beanobject = contexto.getBean(nombrebean);
         return beanobject;
     }
-
     public String[] getId() {
         return id;
     }
@@ -46,29 +56,29 @@ public class Subject {
     public void setName(String name) {
         this.name = name;
     }
-    public String fetchName(int id, ServletContext servlet)
-    { String subjectName = null ;
+ public String fetchName(int id, ServletContext servlet)
+    { String name = null ;
         try {
              DriverManagerDataSource dataSource;
-        dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",servlet);
+        dataSource = (DriverManagerDataSource)this.getBean("dataSource",servlet);
         this.cn = dataSource.getConnection();
              Statement st = this.cn.createStatement();
              
-            String consulta = "SELECT Title FROM AH_ZAF.dbo.Courses where CourseID = "+id;
+            String consulta = "SELECT name FROM public.method where id = "+id;
             ResultSet rs = st.executeQuery(consulta);
           
             while (rs.next())
             {
-                subjectName = rs.getString("Title");
+                name = rs.getString("name");
                 
             }
             //this.finalize();
             
         } catch (SQLException ex) {
-            System.out.println("Error : " + ex);
+            System.out.println("Error reading methods: " + ex);
         }
        
-        return subjectName;
+        return name;
     
     }   
     

@@ -18,11 +18,10 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author nmohamed
  */
-public class Method {
-     private String[] id;
+public class Category {
+    private String[] id;
     private String name;
  Connection cn;
-    private ServletContext servlet;
 
     public String getDescription() {
         return description;
@@ -31,6 +30,7 @@ public class Method {
     public void setDescription(String description) {
         this.description = description;
     }
+    private ServletContext servlet;
     private String description;
       
 //      private ServletContext servlet;
@@ -57,29 +57,28 @@ public class Method {
         this.name = name;
     }
  public String fetchName(int id, ServletContext servlet)
-    { String name = null ;
+    { String subName = null ;
         try {
              DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",servlet);
         this.cn = dataSource.getConnection();
              Statement st = this.cn.createStatement();
              
-            String consulta = "SELECT name FROM public.method where id = "+id;
+            String consulta = "SELECT name FROM public.objective where id = "+id;
             ResultSet rs = st.executeQuery(consulta);
           
             while (rs.next())
             {
-                name = rs.getString("name");
+                subName = rs.getString("name");
                 
             }
             //this.finalize();
             
         } catch (SQLException ex) {
-            System.out.println("Error reading methods: " + ex);
+            System.out.println("Error reading objectives: " + ex);
         }
        
-        return name;
+        return subName;
     
     }   
-    
 }

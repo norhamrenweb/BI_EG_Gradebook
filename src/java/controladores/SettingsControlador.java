@@ -5,11 +5,11 @@
  */
 package controladores;
 
-import Montessori.Content;
+import Montessori.Assignment;
 import Montessori.Level;
-import Montessori.Method;
-import Montessori.Objective;
-import Montessori.Subject;
+import Montessori.Criteria;
+import Montessori.Category;
+import Montessori.Course;
 import Montessori.User;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -75,7 +75,7 @@ public class SettingsControlador extends MultiActionController{
       public ModelAndView subjectlistLevel(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("settings");
-        List<Subject> subjects = new ArrayList<>();
+        List<Course> subjects = new ArrayList<>();
        try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
@@ -90,20 +90,20 @@ public class SettingsControlador extends MultiActionController{
              st = this.cn.createStatement();
              levelid= hsr.getParameterValues("seleccion1");
           ResultSet rs1 = st.executeQuery("select CourseID from Course_GradeLevel where GradeLevel IN (select GradeLevel from GradeLevels where GradeLevelID ="+levelid[0]+")");
-           Subject s = new Subject();
+           Course s = new Course();
           s.setName("Select Subject");
           subjects.add(s);
            
            while (rs1.next())
             {
-             Subject sub = new Subject();
+             Course sub = new Course();
              String[] ids = new String[1];
             ids[0]=""+rs1.getInt("CourseID");
              sub.setId(ids);
             
                 subjects.add(sub);
             }
-           for(Subject su:subjects.subList(1,subjects.size()))
+           for(Course su:subjects.subList(1,subjects.size()))
           {
               String[] ids = new String[1];
               ids=su.getId();
@@ -127,7 +127,7 @@ public class SettingsControlador extends MultiActionController{
        public ModelAndView objectivelistSubject(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("settingtable");
-        List<Objective> objectives = new ArrayList<>();
+        List<Category> objectives = new ArrayList<>();
        try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -150,7 +150,7 @@ public class SettingsControlador extends MultiActionController{
            while (rs1.next())
             {
              String[] ids = new String[1];
-                Objective sub = new Objective();
+                Category sub = new Category();
             ids[0] = ""+rs1.getInt("id");
              sub.setId(ids);
              sub.setName(rs1.getString("name"));
@@ -170,7 +170,7 @@ public class SettingsControlador extends MultiActionController{
         public ModelAndView contentlistObjective(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("settings");
-        List<Content> contents = new ArrayList<>();
+        List<Assignment> contents = new ArrayList<>();
        try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -188,7 +188,7 @@ public class SettingsControlador extends MultiActionController{
           //String[] ids = new String[1];
            while (rs1.next())
             {
-                Content eq = new Content();
+                Assignment eq = new Assignment();
                 String[] id= new String[1];
                id[0]= ""+rs1.getInt("id");
               
@@ -210,8 +210,8 @@ public class SettingsControlador extends MultiActionController{
         public ModelAndView contentlist(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("settings");
-        List<Content> contents = new ArrayList<>();
-       List<Objective> objectives = new ArrayList<>();
+        List<Assignment> contents = new ArrayList<>();
+       List<Category> objectives = new ArrayList<>();
         try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -222,21 +222,21 @@ public class SettingsControlador extends MultiActionController{
              Statement st = this.cn.createStatement();
             ResultSet rs2 = st.executeQuery("select id, name from objective where subject_id ="+hsr.getParameter("seleccion"));
             while(rs2.next()){
-                Objective o = new Objective();
+                Category o = new Category();
                 String[] ids = new String[1];
                 ids[0] = String.valueOf(rs2.getInt("id"));
                 o.setId(ids);
                 o.setName(rs2.getString("name"));
                 objectives.add(o);
             }
-          for(Objective obj:objectives){
+          for(Category obj:objectives){
            String[] id = new String[1];
             id = obj.getId();
             ResultSet rs1 = st.executeQuery("SELECT name,id,description FROM public.content where public.content.id IN (select public.objective_content.content_id from public.objective_content where public.objective_content.objective_id ="+id[0]+")");
 
               while (rs1.next())
             {
-                Content eq = new Content();
+                Assignment eq = new Assignment();
                 String[] i= new String[1];
                i[0]= ""+rs1.getInt("id");
               
@@ -262,7 +262,7 @@ public class SettingsControlador extends MultiActionController{
      public ModelAndView editObjective(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("editsetting");
-       Objective objective = new Objective();
+       Category objective = new Category();
         try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());

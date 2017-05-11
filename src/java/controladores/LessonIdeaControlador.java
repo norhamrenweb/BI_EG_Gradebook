@@ -123,7 +123,7 @@ public class LessonIdeaControlador {
         }
         for (DBRecords x :lessons)
         {
-            Subject s = new Subject();
+            Course s = new Course();
             String id = null;
             id = x.getCol3();
             x.setCol3(s.fetchName(Integer.parseInt(id), hsr.getServletContext()));

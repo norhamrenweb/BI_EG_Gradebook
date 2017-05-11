@@ -71,21 +71,21 @@ public class ProgressControlador {
 //            }
            String consulta = "SELECT * FROM public.lesson_detailes where id ="+lessonid;
             ResultSet rs1 = st.executeQuery(consulta);
-        Lessons lesson = new Lessons();
+        Classes lesson = new Classes();
             while (rs1.next())
-            {Objective obj = new Objective();
+            {Category obj = new Category();
             obj.setName(rs1.getString("objectivename"));
             String[] ids = new String[1];
             ids[0]= String.valueOf(rs1.getInt("objective_id"));
             obj.setId(ids);
             lesson.setObjective(obj);
-            Subject sub = new Subject();
+            Course sub = new Course();
             String name = sub.fetchName(rs1.getInt("subject_id"),hsr.getServletContext());
             sub.setName(name);
             String[] subids = new String[1];
             subids[0]= String.valueOf(rs1.getInt("subject_id"));
             sub.setId(ids);
-            lesson.setSubject(sub);
+            lesson.setCourse(sub);
             lesson.setName(rs1.getString("name"));
             lesson.setId(Integer.parseInt(lessonid));
             }
@@ -127,7 +127,7 @@ public class ProgressControlador {
     }
     
     
-    public List<Progress> getRecords(Lessons lesson,ServletContext servlet) throws SQLException
+    public List<Progress> getRecords(Classes lesson,ServletContext servlet) throws SQLException
     {
         
         List<Progress> records = new ArrayList<>();

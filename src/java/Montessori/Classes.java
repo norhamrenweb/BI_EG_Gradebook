@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author nmohamed
  */
-public class Lessons {
+public class Classes {
     
     private int id;
     private String name;
@@ -21,17 +21,17 @@ public class Lessons {
     private String finish;
     private boolean template;
     private Level level;
-    private Objective objective;
-    private Subject subject;
+    private Category objective;
+    private Course course;
     private String[] contentid;
     private int teacherid;
-    private Method method;
+    private Criteria method;
 
-    public Method getMethod() {
+    public Criteria getMethod() {
         return method;
     }
 
-    public void setMethod(Method method) {
+    public void setMethod(Criteria method) {
         this.method = method;
     }
 
@@ -79,16 +79,16 @@ public class Lessons {
         this.level = level;
     }
 
-    public Objective getObjective() {
+    public Category getObjective() {
         return objective;
     }
 
-    public void setObjective(Objective objective) {
+    public void setObjective(Category objective) {
         this.objective = objective;
     }
 
-    public Subject getSubject() {
-        return subject;
+    public Course getCourse() {
+        return course;
     }
 
     public String getStart() {
@@ -109,8 +109,8 @@ public class Lessons {
 
     
 
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
    

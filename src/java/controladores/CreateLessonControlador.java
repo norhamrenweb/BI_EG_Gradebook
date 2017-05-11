@@ -60,7 +60,7 @@ public class CreateLessonControlador {
     public ModelAndView start(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("createlesson");
-       List <Lessons> ideas = new ArrayList();
+       List <Classes> ideas = new ArrayList();
         DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
         this.cn = dataSource.getConnection();
@@ -85,13 +85,13 @@ public class CreateLessonControlador {
         this.cn = dataSource2.getConnection();
          Statement st2 = this.cn.createStatement();
         ResultSet rs1 = st2.executeQuery("SELECT * FROM public.method");
-        List <Method> methods = new ArrayList();
-        Method m = new Method();
+        List <Criteria> methods = new ArrayList();
+        Criteria m = new Criteria();
         m.setName("Select Method");
         methods.add(m);
         while(rs1.next())
         {
-            Method x = new Method();
+            Criteria x = new Criteria();
              String[] ids = new String[1];
              ids[0]=""+rs1.getInt("id");
             x.setId(ids);
@@ -105,7 +105,7 @@ public class CreateLessonControlador {
        ResultSet rs2 = st2.executeQuery("SELECT * FROM public.lessons where idea = true");
         while(rs2.next())
         {
-         Lessons idea = new Lessons();   
+         Classes idea = new Classes();   
         idea.setId(rs2.getInt("id")); 
         idea.setName(rs2.getString("name"));
         ideas.add(idea);
@@ -118,7 +118,7 @@ public class CreateLessonControlador {
     public ModelAndView startIdea(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("lessonidea");
-       List <Lessons> ideas = new ArrayList();
+       List <Classes> ideas = new ArrayList();
         DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
         this.cn = dataSource.getConnection();
@@ -143,13 +143,13 @@ public class CreateLessonControlador {
         this.cn = dataSource2.getConnection();
          Statement st2 = this.cn.createStatement();
         ResultSet rs1 = st2.executeQuery("SELECT * FROM public.method");
-        List <Method> methods = new ArrayList();
-        Method m = new Method();
+        List <Criteria> methods = new ArrayList();
+        Criteria m = new Criteria();
         m.setName("Select Method");
         methods.add(m);
         while(rs1.next())
         {
-            Method x = new Method();
+            Criteria x = new Criteria();
              String[] ids = new String[1];
              ids[0]=""+rs1.getInt("id");
             x.setId(ids);
@@ -163,7 +163,7 @@ public class CreateLessonControlador {
        ResultSet rs2 = st2.executeQuery("SELECT * FROM public.lessons where idea = true");
         while(rs2.next())
         {
-         Lessons idea = new Lessons();   
+         Classes idea = new Classes();   
         idea.setId(rs2.getInt("id")); 
         idea.setName(rs2.getString("name"));
         ideas.add(idea);
@@ -317,10 +317,10 @@ public class CreateLessonControlador {
          
         
        
-       Lessons newlesson = new Lessons();
+       Classes newlesson = new Classes();
        String[] contentids;
-       Subject subject = new Subject();
-       Objective objective = new Objective();
+       Course subject = new Course();
+       Category objective = new Category();
        Level level = new Level();
        level.setName(hsr.getParameter("TXTlevel"));
        level.setId(hsr.getParameterValues("TXTlevel"));
@@ -330,7 +330,7 @@ public class CreateLessonControlador {
        objective.setId(hsr.getParameterValues("TXTobjective"));
        contentids=hsr.getParameterValues("TXTcontent");
        newlesson.setComments(hsr.getParameter("TXTdescription"));
-       Method m = new Method();
+       Criteria m = new Criteria();
        m.setId(hsr.getParameterValues("TXTmethod"));
        m.setName(hsr.getParameter("TXTmethod"));
        newlesson.setMethod(m);
@@ -340,7 +340,7 @@ public class CreateLessonControlador {
      newlesson.setTeacherid(user.getId());
        
       newlesson.setLevel(level);
-      newlesson.setSubject(subject);
+      newlesson.setCourse(subject);
       newlesson.setObjective(objective);
        newlesson.setContentid(contentids);
        
@@ -380,7 +380,7 @@ public class CreateLessonControlador {
      public ModelAndView namelistSubject(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception
      {
      ModelAndView mv = new ModelAndView("createlesson");
-     List<Lessons> lessons = new ArrayList<>();
+     List<Classes> lessons = new ArrayList<>();
      
       try {
          DriverManagerDataSource dataSource;
@@ -396,12 +396,12 @@ public class CreateLessonControlador {
           
             
           ResultSet rs1 = st.executeQuery("select name,id from lesson_plan where subject_id= "+subjectid);
-          Lessons l = new Lessons();
+          Classes l = new Classes();
           l.setName("Select lesson name");
           lessons.add(l);
            while (rs1.next())
             {
-                 Lessons ll = new Lessons();
+                 Classes ll = new Classes();
                  ll.setName(rs1.getString("name"));
                  ll.setId(rs1.getInt("id"));
                 lessons.add(ll);
@@ -423,9 +423,9 @@ public class CreateLessonControlador {
              ModelAndView mv = new ModelAndView("createlesson");
              JSONObject json = new JSONObject();
              String[] lessonplanid = hsr.getParameterValues("seleccionidea");
-               Subject sub = new Subject();
-               Objective obj = new Objective();
-             Method meth = new Method();
+               Course sub = new Course();
+               Category obj = new Category();
+             Criteria meth = new Criteria();
              Level lev = new Level();
              int levelid = 0;
              List<String> contents = new ArrayList<>();
@@ -494,27 +494,27 @@ public class CreateLessonControlador {
                return json.toString();
       
          } 
-       public ArrayList<Subject> getSubjects(String[] levelid) throws SQLException
+       public ArrayList<Course> getSubjects(String[] levelid) throws SQLException
        {
            
-        ArrayList<Subject> subjects = new ArrayList<>();
+        ArrayList<Course> subjects = new ArrayList<>();
            Statement st = this.cn.createStatement();
              
           ResultSet rs1 = st.executeQuery("select CourseID from Course_GradeLevel where GradeLevel IN (select GradeLevel from GradeLevels where GradeLevelID ="+levelid[0]+")");
-           Subject s = new Subject();
+           Course s = new Course();
           s.setName("Select Subject");
           subjects.add(s);
            
            while (rs1.next())
             {
-             Subject sub = new Subject();
+             Course sub = new Course();
              String[] ids = new String[1];
             ids[0]=""+rs1.getInt("CourseID");
              sub.setId(ids);
             
                 subjects.add(sub);
             }
-           for(Subject su:subjects.subList(1,subjects.size()))
+           for(Course su:subjects.subList(1,subjects.size()))
           {
               String[] ids = new String[1];
               ids=su.getId();
@@ -526,22 +526,22 @@ public class CreateLessonControlador {
           }
            return subjects;
        }
-        public ArrayList<Objective> getObjectives(String[] subjectid) throws SQLException
+        public ArrayList<Category> getObjectives(String[] subjectid) throws SQLException
        {
-           ArrayList<Objective> objectives = new ArrayList<>();
+           ArrayList<Category> objectives = new ArrayList<>();
        try {
         
              Statement st = this.cn.createStatement();
             
           ResultSet rs1 = st.executeQuery("select name,id from public.objective where subject_id="+subjectid[0]);
-          Objective s = new Objective();
+          Category s = new Category();
           s.setName("Select Objective");
           objectives.add(s);
            
            while (rs1.next())
             {
              String[] ids = new String[1];
-                Objective sub = new Objective();
+                Category sub = new Category();
             ids[0] = ""+rs1.getInt("id");
              sub.setId(ids);
              sub.setName(rs1.getString("name"));
@@ -554,9 +554,9 @@ public class CreateLessonControlador {
         }
        return objectives;
        }
-        public ArrayList<Content> getContent(String[] objectiveid) throws SQLException
+        public ArrayList<Assignment> getContent(String[] objectiveid) throws SQLException
        {
-           ArrayList<Content> contents = new ArrayList<>();
+           ArrayList<Assignment> contents = new ArrayList<>();
        try {
         
              Statement st = this.cn.createStatement();
@@ -566,7 +566,7 @@ public class CreateLessonControlador {
          
            while (rs1.next())
             {
-                Content eq = new Content();
+                Assignment eq = new Assignment();
                 String[] id= new String[1];
                id[0]= ""+rs1.getInt("id");
               

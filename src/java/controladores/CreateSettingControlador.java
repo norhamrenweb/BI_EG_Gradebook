@@ -90,10 +90,10 @@ public class CreateSettingControlador{
         this.cn = dataSource2.getConnection();
          Statement st2 = this.cn.createStatement();
         ResultSet rs1 = st2.executeQuery("SELECT * FROM public.method");
-        List <Method> methods = new ArrayList();
+        List <Criteria> methods = new ArrayList();
         while(rs1.next())
         {
-            Method x = new Method();
+            Criteria x = new Criteria();
              String[] ids = new String[1];
              ids[0]=""+rs1.getInt("id");
             x.setId(ids);
@@ -113,7 +113,7 @@ public class CreateSettingControlador{
     public ModelAndView subjectlistLevel(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("createsettings");
-        List<Subject> subjects = new ArrayList<>();
+        List<Course> subjects = new ArrayList<>();
        try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
@@ -134,14 +134,14 @@ public class CreateSettingControlador{
            
            while (rs1.next())
             {
-             Subject sub = new Subject();
+             Course sub = new Course();
              String[] ids = new String[1];
             ids[0]=""+rs1.getInt("CourseID");
              sub.setId(ids);
             
                 subjects.add(sub);
             }
-           for(Subject su:subjects.subList(1,subjects.size()))
+           for(Course su:subjects.subList(1,subjects.size()))
           {
               String[] ids = new String[1];
               ids=su.getId();
@@ -165,7 +165,7 @@ public class CreateSettingControlador{
     public ModelAndView objectivelistSubject(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
      ModelAndView mv = new ModelAndView("createsettings");
-        List<Objective> objectives = new ArrayList<>();
+        List<Category> objectives = new ArrayList<>();
        try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -188,7 +188,7 @@ public class CreateSettingControlador{
            while (rs1.next())
             {
              String[] ids = new String[1];
-                Objective sub = new Objective();
+                Category sub = new Category();
             ids[0] = ""+rs1.getInt("id");
              sub.setId(ids);
              sub.setName(rs1.getString("name"));
@@ -211,10 +211,10 @@ public class CreateSettingControlador{
     public String contentlistObjective(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
 //       ModelAndView mv = new ModelAndView("createsettings");
-       List<Content> contents = new ArrayList<>();
+       List<Assignment> contents = new ArrayList<>();
 
       JSONObject obj = new JSONObject();
-      Objective objective = new Objective();
+      Category objective = new Category();
        try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -233,7 +233,7 @@ public class CreateSettingControlador{
            while (rs1.next())
             {
              String[] ids = new String[1];
-             Content eq = new Content();
+             Assignment eq = new Assignment();
             ids[0] = String.valueOf(rs1.getInt("id"));
              eq.setId(ids);
              eq.setName(rs1.getString("name"));
@@ -297,7 +297,7 @@ public class CreateSettingControlador{
     @RequestMapping(value="/createsetting/editObjective.htm")
     @ResponseBody
     public String editObjective(HttpServletRequest hsr,HttpServletResponse hsr1) throws Exception {
-        List<Objective> objectives = new ArrayList<>();
+        List<Category> objectives = new ArrayList<>();
    //   JSONObject obj = new JSONObject();
        String[] hi = hsr.getParameterValues("data");
        JSONObject jsonObj = new JSONObject(hi[0]);
@@ -312,7 +312,7 @@ public class CreateSettingControlador{
         message = "Objective edited successfully";   
         ResultSet rs = st.executeQuery("select * from objective where subject_id = "+jsonObj.getString("subjectid"));
         while(rs.next()){
-        Objective o = new Objective();
+        Category o = new Category();
         o.setDescription(rs.getString("description"));
         String[] id = new String[1];
         id[0]=""+rs.getInt("id");
@@ -338,7 +338,7 @@ public class CreateSettingControlador{
        String[] input = hsr.getParameterValues("data");
        JSONObject jsonObj = new JSONObject(input[0]);
         String message = null;
-        Objective o = new Objective();
+        Category o = new Category();
         try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -412,7 +412,7 @@ public class CreateSettingControlador{
     String[] input = hsr.getParameterValues("data");
        JSONObject jsonObj = new JSONObject(input[0]);
         String message = null;
-        Content c = new Content();
+        Assignment c = new Assignment();
         try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -449,7 +449,7 @@ public class CreateSettingControlador{
     @ResponseBody
     public String editContent(HttpServletRequest hsr,HttpServletResponse hsr1) throws Exception 
 {
-     List<Content> contents = new ArrayList<>();
+     List<Assignment> contents = new ArrayList<>();
    //   JSONObject obj = new JSONObject();
        String[] hi = hsr.getParameterValues("data");
        JSONObject jsonObj = new JSONObject(hi[0]);
@@ -467,7 +467,7 @@ public class CreateSettingControlador{
            while (rs1.next())
             {
                 String[] ids = new String[1];
-             Content eq = new Content();
+             Assignment eq = new Assignment();
             ids[0] = String.valueOf(rs1.getInt("id"));
              eq.setId(ids);
              eq.setName(rs1.getString("name"));
@@ -561,7 +561,7 @@ public class CreateSettingControlador{
        String[] input = hsr.getParameterValues("data");
        JSONObject jsonObj = new JSONObject(input[0]);
         String message = null;
-        Method m = new Method();
+        Criteria m = new Criteria();
         try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -596,7 +596,7 @@ public class CreateSettingControlador{
 @RequestMapping(value="/createsetting/editMethod.htm")
     @ResponseBody
     public String editMethod(HttpServletRequest hsr,HttpServletResponse hsr1) throws Exception {
-        List<Method> methods = new ArrayList<>();
+        List<Criteria> methods = new ArrayList<>();
    //   JSONObject obj = new JSONObject();
        String[] hi = hsr.getParameterValues("data");
        JSONObject jsonObj = new JSONObject(hi[0]);
@@ -611,7 +611,7 @@ public class CreateSettingControlador{
         message = "Objective edited successfully";   
         ResultSet rs = st.executeQuery("select * from method ");
         while(rs.next()){
-        Method m = new Method();
+        Criteria m = new Criteria();
         m.setDescription(rs.getString("description"));
         String[] id = new String[1];
         id[0]=""+rs.getInt("id");
