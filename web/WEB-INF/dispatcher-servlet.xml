@@ -54,7 +54,7 @@
     <bean class="controladores.CreateSettingControlador" id="createsetting"/>
         <bean class="controladores.CreateLessonControlador" id="createlesson"/>
          <bean class="controladores.LessonsListControlador" id="lessonsList"/>
-         <bean class="controladores.ProgressControlador" id="lessonprogress"/>
+         <bean class="controladores.GradeBookController" id="gradebook"/>
           <bean class="controladores.LessonIdeaControlador" id="lessonidea"/>
         <bean class="controladores.EditLessonControlador" id="editlesson"/>
 <bean class="controladores.CerrarLogin" id="cerrarLoginController"/>
@@ -78,7 +78,7 @@
                 <prop key="createsetting.htm">createsetting</prop>       
                 <prop key="datosIdioma.htm">ControladorIdioma</prop>
                 <prop key="homepage.htm">lessonsList</prop>
-                 <prop key="lessonprogress.htm">lessonprogress</prop>
+                 <prop key="gradebook.htm">gradebook</prop>
                  <prop key="progressbystudent.htm">studentprog</prop>  
                  <prop key="progressdetails.htm">studentprog</prop>
                  <prop key="studentpage.htm">studentprog</prop> 
