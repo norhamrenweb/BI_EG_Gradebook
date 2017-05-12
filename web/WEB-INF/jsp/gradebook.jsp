@@ -82,8 +82,16 @@
     </head>
     <body>
         <div class="container">
-            <div class="col-xs-12 text-center">
-                <h2>${studentname}</h2>
+            <div class="col-xs-12">
+                <div class="col-xs-4">
+                    <label>Term:</label>
+                    <select>
+                        <option>Q1</option>
+                        <option>Q2</option>
+                        <option>Q3</option>
+                    </select>
+                </div>
+                
             </div>
             
             <div class="col-xs-12" style="border-bottom: #08c solid 1px">
