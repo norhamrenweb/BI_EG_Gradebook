@@ -12,6 +12,7 @@
 <!DOCTYPE html>
 <html>
     <%@ include file="infouser.jsp" %>
+    <%@ include file="menu.jsp" %>
     <head>
         <title>Progress Details</title>
         <script>
@@ -19,7 +20,60 @@
                var numberAttempted = $('#contenedorAttempted').children().length;
                $("#showAttempteds").html(numberAttempted+'<br><span class="glyphicon glyphicon-triangle-bottom"></span>');
                
-                $('#tablelessons').DataTable();
+                var table = $('#tableGradebook').DataTable({
+                    paging: false,
+                    searching: false,
+                    ordering: false,
+                    info:     false,
+                    scrollY: "600px",
+                    scrollX: true,
+                    scrollCollapse: true,
+                    columnDefs: [
+                        {   "width": "75px", 
+                            "targets": "_all" 
+                        },
+                        {   "className": "text-left", 
+                            "targets": [ 1 ]
+                        },
+                        {   "className": "text-center", 
+                            "targets": "_all"
+                        },
+                        {
+                            "targets": [ 0 ],
+                            "visible": false,
+                            "searchable": false
+                        }],
+                    fixedColumns: true
+                });
+                $('#tableGradebook tbody')
+                    .on( 'mouseenter', 'td', function () {
+                        var colIdx = table.cell(this).index().column;
+
+                        $( table.cells().nodes() ).removeClass( 'highlight' );
+                        $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+                    } );
+                    
+                    
+                $( "th" ).click(function() {   
+                    var idCategory = $(this).attr('id');
+                    window.location.replace("<c:url value="/gradebook/loadRecords.htm?ClassSelected="/>"+idCategory);
+                });
+                $("#tableGradebook").on('mouseover', 'th' , function(e) {
+    
+        var $e = $(e.target);
+    
+    if ($e.is('th')) {
+        $('#tableGradebook').popover('destroy');
+        $("#tableGradebook").popover({
+            animation: 'true',
+            trigger: 'hover',
+            placement: 'top',
+            title: $e.attr("data-title"),
+            content: $e.attr("data-content")
+        }).popover('show');
+    }
+});
+                $('[data-category="dataCategory"]').tooltip();
                 
                 $("#contenedorAttempted").on("hide.bs.collapse", function(){
                     $("#showAttempteds").html(numberAttempted+'<br><span class="glyphicon glyphicon-triangle-bottom"></span>');
@@ -78,6 +132,28 @@
                 border-color: transparent;
                 border-image: initial;
             }
+            td.highlight {
+                background-color: grey !important;
+            }
+            .tooltip.top .tooltip-inner{
+ 
+            max-width:310px;
+
+            padding:3px 8px;
+
+            color:#000;
+
+            text-align:center;
+
+            background-color:red !important;
+
+            -webkit-border-radius:5px;
+
+            -moz-border-radius:5px;
+
+            border-radius:5px
+
+            }
         </style>
     </head>
     <body>
@@ -90,81 +166,204 @@
                         <option>Q2</option>
                         <option>Q3</option>
                     </select>
+                    
                 </div>
-                
-            </div>
-            
-            <div class="col-xs-12" style="border-bottom: #08c solid 1px">
-                <div class="col-xs-4">Level</div>
-                <div class="col-xs-4">Subject</div>
-                <div class="col-xs-4">Objective</div>
+               
             </div>
             <div class="col-xs-12">
-                <div class="col-xs-4">${gradelevel}</div>
-                <div class="col-xs-4">${subject}</div>
-                <div class="col-xs-4">${objective}</div>
+            <hr> 
             </div>
-            
-            <div class="col-xs-6" style="margin-top: 30px;">
-                <div class="col-xs-12 spacediv">
-                    <div class="col-xs-6">Presented</div><div class="col-xs-6">${presenteddate}</div>
-                </div>
-                <div class="col-xs-12 spacediv">
-                    <div class="col-xs-6">Attempted</div><div class="col-xs-6">${attempteddate}
-                    <button class="" data-toggle="collapse" data-target="#contenedorAttempted" id="showAttempteds">
-                        
-                    </button>
-                    </div>    
-                </div>
-                <div class="col-xs-12 collapse" id="contenedorAttempted">
-                    <c:forEach var="date" items="${attempteddates}">
-                    <div class="col-xs-12 attempted">
-                        <div class="col-xs-6">Attempted </div>
-                        <div class="col-xs-6">${date}</div>
-                    </div>
-                    </c:forEach>
-<!--                    <div class="col-xs-12 attempted">
-                        <div class="col-xs-6">Attempted 2</div>
-                        <div class="col-xs-6">21/04/2017</div>
-                    </div>
-                    <div class="col-xs-12 attempted">
-                        <div class="col-xs-6">Attempted 3</div>
-                        <div class="col-xs-6">22/04/2017</div>
-                    </div>-->
-                </div>    
-                <div class="col-xs-12 spacediv">
-                    <div class="col-xs-6">Mastered</div><div class="col-xs-6">${mastereddate}</div>
-                </div>
-            </div>
-            <div class="col-xs-6 center-block">
-                <div class="col-xs-6 col-xs-offset-3 containerProgress">
-                    <div class="cellProgress">
-                        <div class="mastered">
-                            <div class="cellProgress text-center">${finalrating}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12" id="divTableLessons">
-                <table id="tablelessons" class="display">
+            <div class="col-xs-12" id="divTableGradebook">
+                <table id="tableGradebook" class="display">
                     <thead>
                         <tr>
-                            <th>Lesson Name</th>
-                            <th>Comment</th>
-                            <th>Comment Date</th>
-                            <th>Rating</th>
-                           
+                            <th>Student ID</th>
+                            <th>Student</th>
+                            <th id="1" data-placement="top" title="Description Quizzes" content="Weight20">Quizzes</th>
+                            <th id="2" data-placement="top" title="Composition Des" content="Weight40">Composition</th>
+                            <th>Participation</th>
+                            <th>Projects</th>
+                            <th>Exam</th>
+                            <th>Text</th>
+                            <th>Homework</th>
+                            <th>ATL</th>
+                            <th>FOR</th>
+                            <th>SUM</th>
+                            <th>Gradebook Grade</th>
+                            <th>Report Card Grade</th>
                         </tr>
                     </thead> 
-                    
-                    <c:forEach var="p" items="${progress}" >
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Tiger Nixon</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Garrett Winters</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Ashton Cox</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Norhan</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Jesús</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Sergio</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Javier</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Carola</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Mauricio</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Marisa</td>
+                            <td>90</td>
+                            <td>80</td>
+                            <td>61</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                            <td>70</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        
+                    </tbody>
+                    <%--<c:forEach var="p" items="${progress}" >
                         <tr>
                             <td>${p.lesson_name}</td>
                             <td>${p.comment}</td>
                             <td>${p.comment_date}</td> 
                             <td>${p.rating}</td>
                         </tr>
-                    </c:forEach>
+                    </c:forEach>--%>
                     
 
                 </table>

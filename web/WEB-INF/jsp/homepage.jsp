@@ -257,6 +257,7 @@ function deleteSelectSure(deleteLessonsSelected, deleteLessonsName) {
             background-color: #666666;
             padding: 5px;
         }
+        
     </style>
     </head>
     <body>
@@ -313,6 +314,21 @@ function deleteSelectSure(deleteLessonsSelected, deleteLessonsName) {
             </table>
            
             </div>--%>
+            <div class="col-xs-12">
+                <div class="col-xs-4">
+                    <label class="label">Term:</label>
+                    <select class="input-group">
+                        <option>Q1</option>
+                        <option>Q2</option>
+                        <option>Q3</option>
+                    </select>
+                    
+                </div>
+               
+            </div>
+            <div class="col-xs-12">
+            <hr> 
+            </div>
             <div class="container">
                 <div class="col-xs-6 col-lg-3 col-md-4">
                     <div class="col-xs-12 divClass" data-idclass="1919">
