@@ -333,7 +333,7 @@ public class CreateLessonControlador {
        Criteria m = new Criteria();
        m.setId(hsr.getParameterValues("TXTmethod"));
        m.setName(hsr.getParameter("TXTmethod"));
-       newlesson.setMethod(m);
+       newlesson.setCriteria(m);
        String[] ideaCheck = hsr.getParameterValues("ideaCheck");
 
       

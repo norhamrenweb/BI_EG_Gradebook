@@ -50,78 +50,105 @@ public class GradeBookController {
     public ModelAndView loadRecords(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("gradebook");
-        List<Students> instructors = new ArrayList<>();
-        Students teacher = new Students();
+        List<Students> students = new ArrayList<>();
+        List<Category> categories = new ArrayList<>();
+        String[][] grades = null;
+        
          try {
          DriverManagerDataSource dataSource;
-        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
+        dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
         this.cn = dataSource.getConnection();
-     String lessonid = hsr.getParameter("LessonsSelected");
+     String classid = "474";//hsr.getParameter("classSelected");
+     String termid = "3";
+     String courseid = "164"; // based on the course setting
 //     DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 //Date lessondate = format.parse(hsr.getParameter("seleccion5"));
+        
+         Statement st = this.cn.createStatement();
 
-    Statement st = this.cn.createStatement();
-//            
-//            String consulta = "SELECT id_lessons FROM public.lessons where nombre_lessons ='"+lessonname+ "' ";
-//            ResultSet rs = st.executeQuery(consulta);
-//          int lessonid = 0;
-//            while (rs.next())
-//            {
-//                lessonid = rs.getInt("id_lessons");
-//            }
-           String consulta = "SELECT * FROM public.lesson_detailes where id ="+lessonid;
-            ResultSet rs1 = st.executeQuery(consulta);
-        Classes lesson = new Classes();
-            while (rs1.next())
-            {Category obj = new Category();
-            obj.setName(rs1.getString("objectivename"));
-            String[] ids = new String[1];
-            ids[0]= String.valueOf(rs1.getInt("objective_id"));
-            obj.setId(ids);
-            lesson.setObjective(obj);
-            Course sub = new Course();
-            String name = sub.fetchName(rs1.getInt("subject_id"),hsr.getServletContext());
-            sub.setName(name);
-            String[] subids = new String[1];
-            subids[0]= String.valueOf(rs1.getInt("subject_id"));
-            sub.setId(ids);
-            lesson.setCourse(sub);
-            lesson.setName(rs1.getString("name"));
-            lesson.setId(Integer.parseInt(lessonid));
-            }
-            consulta ="select presentedby from lessons where id = "+ lessonid;
+//Query for retrieving students enrolled in the sleected class in the term selected(Enrolled# says the term)
+           String consulta = "SELECT r.StudentID , p.FirstName, p.LastName FROM Roster r , Person p where r.Enrolled"+termid+" = 1 and r.StudentID = p.PersonID and r.ClassID ="+classid;
             ResultSet rs = st.executeQuery(consulta);
-            while(rs.next())
+        Classes lesson = new Classes();
+            while (rs.next())
             {
-                
-                teacher.setId_students(rs.getInt("presentedby"));
+                Students s = new Students();
+                s.setId_students(rs.getInt("StudentID"));
+                s.setNombre_students(rs.getString("FirstName")+rs.getString("LastName"));
+                students.add(s);
             }
-    List<Progress> records = this.getRecords(lesson,hsr.getServletContext());
-    mv.addObject("attendancelist", records);
-    mv.addObject("lessondetailes",lesson);
-    //load instructors names from renweb, persons with faculty flag (in staff field)
-    cn.close();
-    dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
-            this.cn = dataSource.getConnection();
-    st = this.cn.createStatement();
-    consulta = "select LastName,FirstName,PersonID from Person where PersonID in (select PersonID from Staff where Faculty = 1)";
-    ResultSet rs2 = st.executeQuery(consulta);
-    while(rs2.next())
-    {
-        Students s = new Students();
-        s.setId_students(rs2.getInt("PersonID"));
-        s.setNombre_students(rs2.getString("FirstName")+" "+ rs2.getString("LastName"));
-        if(teacher.getId_students() == s.getId_students())
+            cn.close();
+        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
+        this.cn = dataSource.getConnection();
+ // query for retrieving the catgeories names and their weights based on the class id
+            Statement st2 = this.cn.createStatement(); 
+            consulta ="select id,weight,name,description from category where t"+termid+" = true and id in(select cat_id from catg_class where class_id = "+classid+")";
+            ResultSet rs1 = st2.executeQuery(consulta);
+            while(rs1.next())
+            {
+                Category cat = new Category();
+                cat.setDescription(rs1.getString("description"));
+                cat.setName(rs1.getString("name"));
+                String[] id = new String[1];
+                id[0]=""+rs1.getInt("id");
+                cat.setId(id);
+                cat.setWeight(rs1.getDouble("weight"));
+                categories.add(cat);   
+            }
+            
+ //query for retrieving the students grades for all assignments under the category for all criterias and adding them
+ //first get the no. of criterias for the equivalent course
+        consulta = "select count(id) from criteria_class where course_id ="+courseid+" group by course_id";
+        ResultSet rs2 = st2.executeQuery(consulta);
+        int critcount = 0;
+        while(rs2.next())
         {
-        teacher.setNombre_students(s.getNombre_students());
+        critcount = rs2.getInt("count");
         }
-        instructors.add(s);
-    }
-    mv.addObject("instructors",instructors);
-    mv.addObject("selectedinst",teacher);
+  // this the table grid
+   grades = new String[students.size()][categories.size()];
+    int categorycount = 0;
+    
+  // second getting the assignment ids under the catgeory      
+  for(Category c: categories){
+     int studentcounter =0;
+      String[] id = new String[1];
+      id = c.getId();
+     consulta = "select id from assignments where catg_id ="+id[0];
+        ResultSet rs3 = st2.executeQuery(consulta);
+        ArrayList<String> assignments = new ArrayList<>();
+        while(rs3.next())
+        {
+            assignments.add(""+rs3.getInt("id"));
+        }
+  
+        for(Students s: students)
+        {   
+           double total = 0;
+           for(int i =1;i<=critcount;i++){
+               double crittotal = 0;
+            for(int z=0;z<assignments.size();z++){
+            
+        consulta = "select criteria"+i+" from student_grades where student_id ="+s.getId_students()+" and assignmentid = "+assignments.get(z);
+        ResultSet rs4 = st2.executeQuery(consulta);
+        while(rs4.next())
+        {
+        crittotal = crittotal + rs4.getDouble("criteria"+i);
+            }
+            }
+          total = total +(crittotal/assignments.size());  
+        }
+           grades[studentcounter][categorycount]=""+total;
+         studentcounter = studentcounter +1;  
+        }  
+        categorycount = categorycount +1;
+  }
          } catch (SQLException ex) {
             System.out.println("Error: " + ex);
         }
+         mv.addObject("grades",grades);
+         mv.addObject("students", students);
+         mv.addObject("categories", categories);
         return mv;
         
     }

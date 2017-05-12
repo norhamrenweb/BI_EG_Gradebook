@@ -99,7 +99,7 @@ public class EditLessonControlador {
        id=null;
        id = m.getId();
        m.setName(m.fetchName(Integer.parseInt(id[0]), hsr.getServletContext()));
-       data.setMethod(m);
+       data.setCriteria(m);
         id = o.getId();
        o.setName(o.fetchName(Integer.parseInt(id[0]), hsr.getServletContext()));
         data.setObjective(o);
