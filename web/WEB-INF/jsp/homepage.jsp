@@ -18,10 +18,24 @@
 
     <script type="text/javascript">
     
-
+var ajax;
     
     $(document).ready( function () {
-    
+        
+            $( ".divClass" ).click(function() {
+                    
+                    if (window.XMLHttpRequest) //mozilla
+                    {
+                        ajax = new XMLHttpRequest(); //No Internet explorer
+                    }
+                    else
+                    {
+                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                    var idCLass = $(this).attr('data-idclass');
+                    ajax.open("POST","gradebook.htm?ClassSelected="+idCLass,true);
+                    ajax.send("");
+            });
         //VARIABLE CUANDO HEMOS CREADO UNA LESSONS CORRECTAMENTE
         
    <%--      var lessondelete = '<%= request.getParameter("messageDelete") %>'; --%>
@@ -54,7 +68,7 @@ function deleteSelectSure(deleteLessonsSelected, deleteLessonsName) {
         $('#deleteLesson').modal('show');
 }
 //   
-var ajax;
+
  function funcionCallBackdetailsLesson()
     {
            if (ajax.readyState===4){
@@ -244,16 +258,22 @@ var ajax;
         {
             background-color: #CC6666;
         }
+        .divClass{
+            min-height: 20px;
+            color: #ffffff;
+            background-color: #666666;
+            padding: 5px;
+        }
     </style>
     </head>
     <body>
         <div class="col-xs-12">
             <div class="col-sm-12" id="maincontainer">
                 <div class="col-sm-12 center-block text-center">
-                    <h2><spring:message code="etiq.txtactivities"/></h2>
+                    <h2>CLASSROOM</h2>
                 </div>
             </div>
-            <div class="container">
+<%--            <div class="container">
                 <table id="table_id" class="display" >
                     <thead>
                         <tr>
@@ -299,6 +319,34 @@ var ajax;
                     </tbody>
             </table>
            
+            </div>--%>
+            <div class="container">
+                <div class="col-xs-6 col-lg-3 col-md-4">
+                    <div class="col-xs-12 divClass" data-idclass="1919">
+                        <div class="col-xs-12">
+                            Grade Abrev
+                        </div>
+                        <div class="col-xs-12">
+                            Course Grade
+                        </div>
+                        <div class="col-xs-12">
+                            Teacher
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-xs-6 col-lg-3 col-md-4">
+                    <div class="col-xs-12 divClass" data-idclass="474">
+                        <div class="col-xs-12">
+                            JP NUM & MATH B
+                        </div>
+                        <div class="col-xs-12">
+                            Test
+                        </div>
+                        <div class="col-xs-12">
+                            Teacher
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 <!-- Modal delete-->
