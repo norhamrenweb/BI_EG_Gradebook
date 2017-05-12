@@ -46,7 +46,7 @@ public class GradeBookController {
         return beanobject;
     }
    
-    @RequestMapping("/lgradebook/loadRecords.htm")
+    @RequestMapping("/gradebook/loadRecords.htm")
     public ModelAndView loadRecords(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("gradebook");
