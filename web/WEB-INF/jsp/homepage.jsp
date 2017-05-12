@@ -24,17 +24,10 @@ var ajax;
         
             $( ".divClass" ).click(function() {
                     
-                    if (window.XMLHttpRequest) //mozilla
-                    {
-                        ajax = new XMLHttpRequest(); //No Internet explorer
-                    }
-                    else
-                    {
-                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
-                    }
+                    
                     var idCLass = $(this).attr('data-idclass');
-                    ajax.open("POST","gradebook.htm?ClassSelected="+idCLass,true);
-                    ajax.send("");
+                    window.location.replace("<c:url value="/gradebook/loadRecords.htm?ClassSelected="/>"+idCLass);
+                    
             });
         //VARIABLE CUANDO HEMOS CREADO UNA LESSONS CORRECTAMENTE
         
