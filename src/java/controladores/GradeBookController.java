@@ -32,7 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author nmohamed
  */
 @Controller
-public class ProgressControlador {
+public class GradeBookController {
     
     
       Connection cn;
@@ -46,10 +46,10 @@ public class ProgressControlador {
         return beanobject;
     }
    
-    @RequestMapping("/lessonprogress/loadRecords.htm")
+    @RequestMapping("/lgradebook/loadRecords.htm")
     public ModelAndView loadRecords(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
-        ModelAndView mv = new ModelAndView("lessonprogress");
+        ModelAndView mv = new ModelAndView("gradebook");
         List<Students> instructors = new ArrayList<>();
         Students teacher = new Students();
          try {
