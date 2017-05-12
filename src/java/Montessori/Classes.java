@@ -25,14 +25,14 @@ public class Classes {
     private Course course;
     private String[] contentid;
     private int teacherid;
-    private Criteria method;
+    private Criteria criteria;
 
-    public Criteria getMethod() {
-        return method;
+    public Criteria getCriteria() {
+        return criteria;
     }
 
-    public void setMethod(Criteria method) {
-        this.method = method;
+    public void setCriteria(Criteria criteria) {
+        this.criteria = criteria;
     }
 
     public String getComments() {

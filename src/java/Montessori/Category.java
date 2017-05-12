@@ -21,10 +21,19 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class Category {
     private String[] id;
     private String name;
+    private double weight;
  Connection cn;
 
     public String getDescription() {
         return description;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
     public void setDescription(String description) {

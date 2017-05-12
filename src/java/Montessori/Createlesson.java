@@ -50,7 +50,7 @@ public class Createlesson {
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",this.servlet);
        this.cn = dataSource.getConnection();
         Statement st = this.cn.createStatement();
-        String test = "insert into lessons(name,level_id,subject_id,objective_id,date_created,user_id,start,finish,comments,method_id,archive,presentedby,idea) values (' "+newlessons.getName()+"',"+newlessons.getLevel().getName()+","+newlessons.getCourse().getName()+","+newlessons.getObjective().getName()+",now(),"+newlessons.getTeacherid()+",'"+newlessons.getStart()+"','"+newlessons.getFinish()+"','"+newlessons.getComments()+"','"+newlessons.getMethod().getName()+"',false,0,false)";
+        String test = "insert into lessons(name,level_id,subject_id,objective_id,date_created,user_id,start,finish,comments,method_id,archive,presentedby,idea) values (' "+newlessons.getName()+"',"+newlessons.getLevel().getName()+","+newlessons.getCourse().getName()+","+newlessons.getObjective().getName()+",now(),"+newlessons.getTeacherid()+",'"+newlessons.getStart()+"','"+newlessons.getFinish()+"','"+newlessons.getComments()+"','"+newlessons.getCriteria().getName()+"',false,0,false)";
        st.executeUpdate(test);
        
             ResultSet rs = st.executeQuery("select id from lessons where name =' "+newlessons.getName()+"'");// this could be a problem if 2 lessons have the same name
@@ -90,7 +90,7 @@ public class Createlesson {
        this.cn = dataSource.getConnection();
         Statement st = this.cn.createStatement();
        
-        String test = "insert into lessons(name,level_id,subject_id,objective_id,date_created,user_id,comments,method_id,archive,presentedby,idea) values (' "+newlessons.getName()+"',"+newlessons.getLevel().getName()+","+newlessons.getCourse().getName()+","+newlessons.getObjective().getName()+",now(),"+newlessons.getTeacherid()+",'"+newlessons.getComments()+"','"+newlessons.getMethod().getName()+"',false,0,true)";
+        String test = "insert into lessons(name,level_id,subject_id,objective_id,date_created,user_id,comments,method_id,archive,presentedby,idea) values (' "+newlessons.getName()+"',"+newlessons.getLevel().getName()+","+newlessons.getCourse().getName()+","+newlessons.getObjective().getName()+",now(),"+newlessons.getTeacherid()+",'"+newlessons.getComments()+"','"+newlessons.getCriteria().getName()+"',false,0,true)";
     //   st.executeUpdate(test);
        st.executeUpdate(test,Statement.RETURN_GENERATED_KEYS);
         ResultSet rs = st.getGeneratedKeys();
