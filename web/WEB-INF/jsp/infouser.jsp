@@ -38,6 +38,7 @@
     <script type="text/javascript" src="<c:url value="/recursos/js/bootstrap-toggle.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/recursos/js/bootstrap-tooltip.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/recursos/js/bootstrap-popover.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/recursos/js/bootstrap-select.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/recursos/js/bootstrap-datetimepicker.js"/>"></script>
     <%--<script type="text/javascript" src="<c:url value="/scripts/json.min.js" /> "></script>--%>
     <script type="text/javascript" src="<c:url value="/recursos/js/es.js"/>"></script>
