@@ -12,6 +12,7 @@
 <!DOCTYPE html>
 <html>
     <%@ include file="infouser.jsp" %>
+    <%@ include file="menu.jsp" %>
     <head>
         <title>Progress Details</title>
         <script>
@@ -19,8 +20,50 @@
                var numberAttempted = $('#contenedorAttempted').children().length;
                $("#showAttempteds").html(numberAttempted+'<br><span class="glyphicon glyphicon-triangle-bottom"></span>');
                
-                $('#tablelessons').DataTable();
-                
+                var table = $('#tableGradebook').DataTable({
+                    paging: false,
+                    searching: false,
+                    ordering: false,
+                    info:     false,
+                    scrollY: "600px",
+                    scrollX: true,
+                    scrollCollapse: true,
+                    columnDefs: [
+                        {   "width": "200px", 
+                            "targets": "_all" 
+                        },
+                        {   "width": "150px",
+                            "className": "text-left", 
+                            "targets": [ 1 ]
+                        },
+                        {   "className": "text-center", 
+                            "targets": "_all"
+                        },
+                        {
+                            "targets": [ 0 ],
+                            "visible": false,
+                            "searchable": false
+                        }],
+                    fixedColumns: true
+                });
+                $('#tableGradebook tbody')
+                    .on( 'mouseenter', 'td', function () {
+                        var colIdx = table.cell(this).index().column;
+
+                        $( table.cells().nodes() ).removeClass( 'highlight' );
+                        $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+                    } );
+                    
+                    
+                $( "th" ).click(function() {   
+                    var idCategory = $(this).attr('id');
+                    window.location.replace("<c:url value="/gradebook/loadRecords.htm?ClassSelected="/>"+idCategory);
+                });
+                $('[data-toggle="popover"]').popover({
+                    placement : 'top',
+                    trigger : 'hover'
+                });
+                     
                 $("#contenedorAttempted").on("hide.bs.collapse", function(){
                     $("#showAttempteds").html(numberAttempted+'<br><span class="glyphicon glyphicon-triangle-bottom"></span>');
                 });
@@ -41,7 +84,7 @@
             .attempted{
                 color: #D0D2D3;
             }
-             .containerProgress
+            .containerProgress
             {
                 display: table;
 /*                background-color: #d9edf7;*/
@@ -78,6 +121,13 @@
                 border-color: transparent;
                 border-image: initial;
             }
+            td.highlight {
+                background-color: rgba(100,100,100, 0.25) !important;
+            }
+            table.dataTable tbody tr :hover{
+                background-color: #0a6aa1 !important;
+            }
+
         </style>
     </head>
     <body>
@@ -90,81 +140,62 @@
                         <option>Q2</option>
                         <option>Q3</option>
                     </select>
+                    
                 </div>
-                
-            </div>
-            
-            <div class="col-xs-12" style="border-bottom: #08c solid 1px">
-                <div class="col-xs-4">Level</div>
-                <div class="col-xs-4">Subject</div>
-                <div class="col-xs-4">Objective</div>
+               
             </div>
             <div class="col-xs-12">
-                <div class="col-xs-4">${gradelevel}</div>
-                <div class="col-xs-4">${subject}</div>
-                <div class="col-xs-4">${objective}</div>
+            <hr> 
             </div>
-            
-            <div class="col-xs-6" style="margin-top: 30px;">
-                <div class="col-xs-12 spacediv">
-                    <div class="col-xs-6">Presented</div><div class="col-xs-6">${presenteddate}</div>
-                </div>
-                <div class="col-xs-12 spacediv">
-                    <div class="col-xs-6">Attempted</div><div class="col-xs-6">${attempteddate}
-                    <button class="" data-toggle="collapse" data-target="#contenedorAttempted" id="showAttempteds">
-                        
-                    </button>
-                    </div>    
-                </div>
-                <div class="col-xs-12 collapse" id="contenedorAttempted">
-                    <c:forEach var="date" items="${attempteddates}">
-                    <div class="col-xs-12 attempted">
-                        <div class="col-xs-6">Attempted </div>
-                        <div class="col-xs-6">${date}</div>
-                    </div>
-                    </c:forEach>
-<!--                    <div class="col-xs-12 attempted">
-                        <div class="col-xs-6">Attempted 2</div>
-                        <div class="col-xs-6">21/04/2017</div>
-                    </div>
-                    <div class="col-xs-12 attempted">
-                        <div class="col-xs-6">Attempted 3</div>
-                        <div class="col-xs-6">22/04/2017</div>
-                    </div>-->
-                </div>    
-                <div class="col-xs-12 spacediv">
-                    <div class="col-xs-6">Mastered</div><div class="col-xs-6">${mastereddate}</div>
-                </div>
-            </div>
-            <div class="col-xs-6 center-block">
-                <div class="col-xs-6 col-xs-offset-3 containerProgress">
-                    <div class="cellProgress">
-                        <div class="mastered">
-                            <div class="cellProgress text-center">${finalrating}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12" id="divTableLessons">
-                <table id="tablelessons" class="display">
+            <div class="col-xs-12" id="divTableGradebook">
+                <table id="tableGradebook" class="display">
                     <thead>
                         <tr>
-                            <th>Lesson Name</th>
-                            <th>Comment</th>
-                            <th>Comment Date</th>
-                            <th>Rating</th>
-                           
+                            <th>Student ID</th>
+                            <th>Student</th>
+                            <c:forEach var="p" items="${categories}" varStatus="contadorC">
+                            <th id="${p.id[0]}"><span data-content="${p.weight}" data-toggle="popover" data-placement="left" data-original-title="${p.description}" data-trigger="hover">${p.name}</span></th>
+                            </c:forEach>
+                            <th>Gradebook Grade</th>
+                            <th>Report Card Grade</th>
                         </tr>
                     </thead> 
-                    
-                    <c:forEach var="p" items="${progress}" >
+                    <tbody>
+                        <c:forEach var="s" items="${students}" varStatus="contador">
+                        <tr>
+                            <td>${s.id_students}</td>
+                            <td>${s.nombre_students}</td>
+                            
+                            <c:forEach var="g" items="${grades}" varStatus="contadorG">
+                                <c:if test="${categories.size()>contadorG.index}">
+                                <td>${grades[contador.index][contadorG.index]}
+                                    <%--<br>
+${contador.index} - ${contadorG.index}--%>
+                                </td>
+                            </c:if>
+                            </c:forEach>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>
+                        </c:forEach>
+<%--                        <tr>
+                            <td>2</td>
+                            <td>Tiger Nixon</td>
+                            <td>${grades[1][0]}</td> 
+                            <td>${grades[1][1]}</td>
+                            <td>50</td>
+                            <td>50</td>
+                        </tr>--%>
+                        
+                    </tbody>
+                    <%--<c:forEach var="p" items="${progress}" >
                         <tr>
                             <td>${p.lesson_name}</td>
                             <td>${p.comment}</td>
                             <td>${p.comment_date}</td> 
                             <td>${p.rating}</td>
                         </tr>
-                    </c:forEach>
+                    </c:forEach>--%>
                     
 
                 </table>
