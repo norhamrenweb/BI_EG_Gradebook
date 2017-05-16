@@ -57,7 +57,7 @@
                     
                 $( "th" ).click(function() {   
                     var idCategory = $(this).attr('id');
-                    window.location.replace("<c:url value="/gradebook/loadRecords.htm?ClassSelected="/>"+idCategory);
+                    window.location.replace("<c:url value="/assignments/loadRecords.htm?ClassSelected="/>"+idCategory);
                 });
                 $('[data-toggle="popover"]').popover({
                     placement : 'top',
