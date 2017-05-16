@@ -138,7 +138,7 @@ public class GradeBookController {
             }
           total = total +(crittotal/assignments.size());  
         }
-           grades[studentcounter][categorycount]=""+total;
+           grades[studentcounter][categorycount]=""+total;//based on the decimal setting the garde should be painted,notdone yet
          studentcounter = studentcounter +1;  
         }  
         categorycount = categorycount +1;
