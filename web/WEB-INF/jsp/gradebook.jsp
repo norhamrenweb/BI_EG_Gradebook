@@ -29,10 +29,11 @@
                     scrollX: true,
                     scrollCollapse: true,
                     columnDefs: [
-                        {   "width": "75px", 
+                        {   "width": "200px", 
                             "targets": "_all" 
                         },
-                        {   "className": "text-left", 
+                        {   "width": "150px",
+                            "className": "text-left", 
                             "targets": [ 1 ]
                         },
                         {   "className": "text-center", 
@@ -58,23 +59,11 @@
                     var idCategory = $(this).attr('id');
                     window.location.replace("<c:url value="/gradebook/loadRecords.htm?ClassSelected="/>"+idCategory);
                 });
-                $("#tableGradebook").on('mouseover', 'th' , function(e) {
-    
-        var $e = $(e.target);
-    
-    if ($e.is('th')) {
-        $('#tableGradebook').popover('destroy');
-        $("#tableGradebook").popover({
-            animation: 'true',
-            trigger: 'hover',
-            placement: 'top',
-            title: $e.attr("data-title"),
-            content: $e.attr("data-content")
-        }).popover('show');
-    }
-});
-                $('[data-category="dataCategory"]').tooltip();
-                
+                $('[data-toggle="popover"]').popover({
+                    placement : 'top',
+                    trigger : 'hover'
+                });
+                     
                 $("#contenedorAttempted").on("hide.bs.collapse", function(){
                     $("#showAttempteds").html(numberAttempted+'<br><span class="glyphicon glyphicon-triangle-bottom"></span>');
                 });
@@ -95,7 +84,7 @@
             .attempted{
                 color: #D0D2D3;
             }
-             .containerProgress
+            .containerProgress
             {
                 display: table;
 /*                background-color: #d9edf7;*/
@@ -133,27 +122,12 @@
                 border-image: initial;
             }
             td.highlight {
-                background-color: grey !important;
+                background-color: rgba(100,100,100, 0.25) !important;
             }
-            .tooltip.top .tooltip-inner{
- 
-            max-width:310px;
-
-            padding:3px 8px;
-
-            color:#000;
-
-            text-align:center;
-
-            background-color:red !important;
-
-            -webkit-border-radius:5px;
-
-            -moz-border-radius:5px;
-
-            border-radius:5px
-
+            table.dataTable tbody tr :hover{
+                background-color: #0a6aa1 !important;
             }
+
         </style>
     </head>
     <body>
@@ -179,181 +153,39 @@
                         <tr>
                             <th>Student ID</th>
                             <th>Student</th>
-                            <th id="1" data-placement="top" title="Description Quizzes" content="Weight20">Quizzes</th>
-                            <th id="2" data-placement="top" title="Composition Des" content="Weight40">Composition</th>
-                            <th>Participation</th>
-                            <th>Projects</th>
-                            <th>Exam</th>
-                            <th>Text</th>
-                            <th>Homework</th>
-                            <th>ATL</th>
-                            <th>FOR</th>
-                            <th>SUM</th>
+                            <c:forEach var="p" items="${categories}" varStatus="contadorC">
+                            <th id="${p.id[0]}"><span data-content="${p.weight}" data-toggle="popover" data-placement="left" data-original-title="${p.description}" data-trigger="hover">${p.name}</span></th>
+                            </c:forEach>
                             <th>Gradebook Grade</th>
                             <th>Report Card Grade</th>
                         </tr>
                     </thead> 
                     <tbody>
+                        <c:forEach var="s" items="${students}" varStatus="contador">
                         <tr>
-                            <td>1</td>
-                            <td>Tiger Nixon</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
+                            <td>${s.id_students}</td>
+                            <td>${s.nombre_students}</td>
+                            
+                            <c:forEach var="g" items="${grades}" varStatus="contadorG">
+                                <c:if test="${categories.size()>contadorG.index}">
+                                <td>${grades[contador.index][contadorG.index]}
+                                    <%--<br>
+${contador.index} - ${contadorG.index}--%>
+                                </td>
+                            </c:if>
+                            </c:forEach>
                             <td>50</td>
                             <td>50</td>
                         </tr>
-                        <tr>
+                        </c:forEach>
+<%--                        <tr>
                             <td>2</td>
-                            <td>Garrett Winters</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
+                            <td>Tiger Nixon</td>
+                            <td>${grades[1][0]}</td> 
+                            <td>${grades[1][1]}</td>
                             <td>50</td>
                             <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Ashton Cox</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Norhan</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Jesús</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>Sergio</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td>Javier</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td>Carola</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td>Mauricio</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td>Marisa</td>
-                            <td>90</td>
-                            <td>80</td>
-                            <td>61</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                            <td>70</td>
-                            <td>50</td>
-                            <td>50</td>
-                        </tr>
+                        </tr>--%>
                         
                     </tbody>
                     <%--<c:forEach var="p" items="${progress}" >
