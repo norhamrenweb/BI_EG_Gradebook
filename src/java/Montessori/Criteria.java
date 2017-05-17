@@ -21,6 +21,24 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class Criteria {
      private String[] id;
     private String name;
+    private String[] assignment_id;
+    private String type;
+
+    public String[] getAssignment_id() {
+        return assignment_id;
+    }
+
+    public void setAssignment_id(String[] assignment_id) {
+        this.assignment_id = assignment_id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
  Connection cn;
     private ServletContext servlet;
 

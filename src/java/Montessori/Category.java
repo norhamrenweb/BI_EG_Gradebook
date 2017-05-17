@@ -20,9 +20,18 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  */
 public class Category {
     private String[] id;
+     private int[] crit_ids;
     private String name;
     private double weight;
  Connection cn;
+
+    public int[] getCrit_ids() {
+        return crit_ids;
+    }
+
+    public void setCrit_ids(int[] crit_ids) {
+        this.crit_ids = crit_ids;
+    }
 
     public String getDescription() {
         return description;

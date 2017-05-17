@@ -98,22 +98,32 @@ public class GradeBookController {
             
  //query for retrieving the students grades for all assignments under the category for all criterias and adding them
  //first get the no. of criterias for the equivalent course
-        consulta = "select count(id) from criteria_class where course_id ="+courseid+" group by course_id";
-        ResultSet rs2 = st2.executeQuery(consulta);
-        int critcount = 0;
-        while(rs2.next())
-        {
-        critcount = rs2.getInt("count");
-        }
+//        consulta = "select count(id) from criteria_class where course_id ="+courseid+" group by course_id";
+//        ResultSet rs2 = st2.executeQuery(consulta);
+//        int critcount = 0;
+//        while(rs2.next())
+//        {
+//        critcount = rs2.getInt("count");
+//        }
   // this the table grid
    grades = new String[students.size()][categories.size()];
     int categorycount = 0;
     
   // second getting the assignment ids under the catgeory      
   for(Category c: categories){
-     int studentcounter =0;
       String[] id = new String[1];
       id = c.getId();
+        consulta = "select id from criteria_catg where catg_id ="+id[0];
+        ResultSet rs2 = st2.executeQuery(consulta);
+        int critcount = 0;
+       List<Integer> crit_ids = new ArrayList<>();
+        while(rs2.next())
+        {
+          crit_ids.add(rs2.getInt("id"));
+        critcount = critcount+1;
+        }
+     int studentcounter =0;
+//      c.setCrit_ids(crit_ids);
      consulta = "select id from assignments where catg_id ="+id[0];
         ResultSet rs3 = st2.executeQuery(consulta);
         ArrayList<String> assignments = new ArrayList<>();
@@ -125,17 +135,17 @@ public class GradeBookController {
         for(Students s: students)
         {   
            double total = 0;
-           for(int i =1;i<=critcount;i++){
+           for(int i =0;i<critcount;i++){
                double crittotal = 0;
-            for(int z=0;z<assignments.size();z++){
+         //   for(int z=0;z<assignments.size();z++){ // not sure if needed
             
-        consulta = "select criteria"+i+" from student_grades where student_id ="+s.getId_students()+" and assignmentid = "+assignments.get(z);
+        consulta = "select grade from student_grades where student_id ="+s.getId_students()+" and criteria_id = "+crit_ids.get(i);
         ResultSet rs4 = st2.executeQuery(consulta);
         while(rs4.next())
         {
-        crittotal = crittotal + rs4.getDouble("criteria"+i);
+        crittotal = crittotal + rs4.getDouble("grade");
             }
-            }
+            
           total = total +(crittotal/assignments.size());  
         }
            grades[studentcounter][categorycount]=""+total;//based on the decimal setting the garde should be painted,notdone yet
