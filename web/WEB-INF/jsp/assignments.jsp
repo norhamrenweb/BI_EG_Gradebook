@@ -166,86 +166,38 @@
                         <tr>
                             <th>Student ID</th>
                             <th>Student</th>
+                            <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
                             <th class="text-center">
-                                <div class="col-xs-12">Quiz1</div>
-                                <div class="col-xs-3 celda">Criteria1</div>
-                                <div class="col-xs-3 celda">Criteria2</div>
-                                <div class="col-xs-3 celda">Criteria3</div>
-                                <div class="col-xs-3 celda">Criteria4</div>
+                                <div class="col-xs-12">${assig.name}</div>
+                                <c:forEach var="crit" items="${criterias}">
+                                    <div class="col-xs-6 celda">${crit.name}</div>
+                                </c:forEach>
                             </th>
-                            <th class="text-center">
-                                <div class="col-xs-12">Quiz2</div>
-                                <div class="col-xs-4 celda">Criteria1</div>
-                                <div class="col-xs-4 celda">Criteria2</div>
-                                <div class="col-xs-4 celda">Criteria3</div>
-                            </th>
-                            <th class="text-center">
-                                <div class="col-xs-12">Quiz3</div>
-                                <div class="col-xs-6 celda">Criteria1</div>
-                                <div class="col-xs-6 celda">Criteria2</div>
-                            </th>
-                            <%--<c:forEach var="p" items="${categories}" varStatus="contadorC">
-                            <th id="${p.id[0]}"><span data-content="${p.weight}" data-toggle="popover" data-placement="left" data-original-title="${p.description}" data-trigger="hover">${p.name}</span></th>
-                            </c:forEach>--%>
-                            <th>Gradebook Grade</th>
-                            <th>Report Card Grade</th>
+                            </c:forEach>
                         </tr>
                     </thead> 
                     <tbody>
-                        <%--<c:forEach var="s" items="${students}" varStatus="contador">--%>
+                        <c:forEach var="stud" items="${students}" varStatus="contadorStud">
                         <tr>
-                            <td>1</td>
-                            <td>Pepe</td>
-                            <td>
-                                <div class="col-xs-3 celda">
-                                    <input type="number" width="100%" min="0" max="10"/>
-                                </div>
-                                <div class="col-xs-3 celda">
-                                    <input type="number" width="100%" min="0" max="10"/>
-                                </div>
-                                <div class="col-xs-3 celda">
-                                    <input type="number" width="100%" min="0" max="10"/>
-                                </div>
-                                <div class="col-xs-3 celda">
-                                    <input type="number" width="100%" min="0" max="10"/>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-4 celda">
-                                    <input type="text" pattern="[A-F]{1}" maxlength="1" size="2"/>
-                                </div>
-                                <div class="col-xs-4 celda">
-                                    <input type="text" pattern="[A-F]{1}" maxlength="1" size="2"/>
-                                </div>
-                                <div class="col-xs-4 celda">
-                                    <input type="text" pattern="[A-F]{1}" maxlength="1" size="2"/>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-6 celda">
-                                    <select id="" class="selectpicker">
-                                        <option data-thumbnail="<c:url value="/recursos/img/iconos/faceHappy.png"/>" selected="true"></option>
-                                        <option data-thumbnail="<c:url value="/recursos/img/iconos/faceNormal.png"/>"></option>
-                                        <option data-thumbnail="<c:url value="/recursos/img/iconos/faceUnhappy.png"/>"></option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-6 celda"></div>
-                            </td>
-                            <%--<td>${s.id_students}</td>
-                            <td>${s.nombre_students}</td>
-                            
-                            <c:forEach var="g" items="${grades}" varStatus="contadorG">
-                                <c:if test="${categories.size()>contadorG.index}">
-                                <td>${grades[contador.index][contadorG.index]}
-                                    <br>
-${contador.index} - ${contadorG.index}
+                            <td>${stud.id_students}</td>
+                            <td>${stud.nombre_students}</td>
+                            <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
+                            <c:forEach var="grad" items="${grades}" varStatus="contadorGrades">
+                                <c:if test="${assignments.size()>contadorGrades.index}">
+                                <td class="text-center">
+                                    Stud: ${contadorStud.index}
+                                    <c:forEach var="critGrad" items="${criterias}" varStatus="contadorCrit">
+                                    <div class="col-xs-6 celda">
+                                        ${grad[contadorStud.index][contadorAssig.index]}
+                                    </div>
+                                    </c:forEach>
                                 </td>
-                            </c:if>
-                            </c:forEach>--%>
-                            <td>50</td>
-                            <td>50</td>
+                                </c:if>   
+                             </c:forEach>     
+                            </c:forEach>
                         </tr>
-                        <tr>
+                        </c:forEach>  
+                        <%--<tr>
                             <td>1</td>
                             <td>Pepe</td>
                             <td>
@@ -293,7 +245,7 @@ ${contador.index} - ${contadorG.index}
 ${contador.index} - ${contadorG.index}
                                 </td>
                             </c:if>
-                            </c:forEach>--%>
+                            </c:forEach>
                             <td>50</td>
                             <td>50</td>
                         </tr>
@@ -346,7 +298,7 @@ ${contador.index} - ${contadorG.index}
 ${contador.index} - ${contadorG.index}
                                 </td>
                             </c:if>
-                            </c:forEach>--%>
+                            </c:forEach>
                             <td>50</td>
                             <td>50</td>
                         </tr>
@@ -399,10 +351,10 @@ ${contador.index} - ${contadorG.index}
 ${contador.index} - ${contadorG.index}
                                 </td>
                             </c:if>
-                            </c:forEach>--%>
+                            </c:forEach>
                             <td>50</td>
                             <td>50</td>
-                        </tr>
+                        </tr>--%>
                         <%--</c:forEach>--%>
 <%--                        <tr>
                             <td>2</td>
