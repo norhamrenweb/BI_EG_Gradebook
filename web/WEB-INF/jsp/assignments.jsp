@@ -428,11 +428,11 @@ ${contador.index} - ${contadorG.index}
 
             </div>
             <select id="" class="selectpicker">
-                                        <option>Select...</option>
-                                        <option value="1" data-thumbnail="<c:url value="/recursos/img/iconos/faceHappy.png"/>" selected="true"> </option>
-                                        <option value="2" data-thumbnail="<c:url value="/recursos/img/iconos/faceNormal.png"/>"> </option>
-                                        <option value="3" data-thumbnail="<c:url value="/recursos/img/iconos/faceUnhappy.png"/>"> </option>
-                                    </select>
+                <option>Select...</option>
+                <option value="1" data-thumbnail="<c:url value="/recursos/img/iconos/faceHappy.png"/>" selected="true">Happy</option>
+                <option value="2" data-thumbnail="<c:url value="/recursos/img/iconos/faceNormal.png"/>">Normal</option>
+                <option value="3" data-thumbnail="<c:url value="/recursos/img/iconos/faceUnhappy.png"/>">Unhappy</option>
+            </select>
         </div>
                     
     </body>
