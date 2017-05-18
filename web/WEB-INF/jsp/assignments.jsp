@@ -16,7 +16,7 @@
         <title>Assignments</title>
         <script>
            $(document).ready(function(){
-    
+                
                 var table = $('#tableAssignments').DataTable({
                     paging: false,
                     searching: false,
@@ -27,13 +27,13 @@
                     scrollCollapse: true,
                     columnDefs: [
                         
-                        {   "width": "150px",
+                        {   "width": "10%",
                             "className": "text-left",
                             "targets": [ 1 ]
                         },
-                        {   "width": "auto",
+                        {   "width": "40%",
                             "className": "text-center", 
-                            "targets": "_all"
+                            "targets": '_all'
                         },
                         {
                             "targets": [ 0 ],
@@ -59,10 +59,48 @@
                     trigger : 'hover'
                 });
                      
-           
+                     $(".selectFaces").msDropdown();
   
 
             });
+var tiempo = 60000;
+var ajax;
+var grades;
+            function funcionCallBackLevelStudent()
+    {
+           if (ajax.readyState===4){
+                if (ajax.status===200){
+                    document.getElementById("origen").innerHTML= ajax.responseText;
+                    }
+                }
+            }
+   
+    function save()
+    {
+        
+                var o = {"items":[]}; // create an object with key items to hold array
+           $('.unStyle').each(function(){ // loop in to the input's wrapper
+             var obj = {
+               idStudent :  $(this).attr('data-idStudent'),
+               idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
+               val : $(this).val() // place the name in a new object
+             };
+             o.items.push(obj); // push in the "o" object created
+           });
+
+           $('#console').text(JSON.stringify(o));// strigify to show
+           grades = JSON.stringify(o);
+       
+
+    }
+    function sendgrades()
+    {
+        
+            alert("guardando");
+               ajax.open("POST","studentlistLevel.htm?seleccion="+grades,true);
+               ajax.send("");
+        
+    }    
         </script>
          <style>
             .attempted{
@@ -114,34 +152,45 @@
             .celda{
                 box-sizing: border-box;
                 padding: 0px;
-                border: grey solid thin;
+/*                border: grey solid thin;*/
             }
             .cellCriteria{
                 padding: 0px !important;
             }
             input{
                 box-sizing: border-box;
+                -webkit-appearance:none ;
             }
             input:valid {
-                background-color: green;
+                background-color: lightgray;
+                
             }
             input:invalid {
-                background-color: red;
+                background-color: red !important;
             }
             .flotante {
                 display:scroll;
-                    position:fixed;
-                    bottom:200px;
-                    right:200px;
+                position:fixed;
+                bottom:200px;
+                right:200px;
             }
-            select#grade option[value="good"]   { background-image:url(<c:url value="/recursos/img/iconos/faceHappy.png"/>;)   }
-            select#grade option[value="normal"] { background-image:url(<c:url value="/recursos/img/iconos/faceUnhappy.png"/>;) }
-            select#grade option[value="bad"] { background-image:url(<c:url value="/recursos/img/iconos/faceUnhappy.png"/>;) }
+            .unStyle
+            {
+                text-align: right;
+                background-color: transparent !important;
+                outline: none !important;
+                box-shadow: none;
+                border: none;
+            }
+           
         </style>
     </head>
     <body>
+        <div class="col-xs-12" id="console">
+            
+        </div>
         <div class="span2">
-            <p><button id="saveGrades" class="btn btn-xs flotante"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
+            <p><button id="saveGrades" class="flotante" onclick="sendgrades()"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
             </p>
         </div>
         <div class="container">
@@ -161,7 +210,7 @@
             <hr> 
             </div>
             <div class="col-xs-12" id="divTableGradebook">
-                <table id="tableAssignments" class="display">
+                <table id="tableAssignments" class="display cell-border" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Student ID</th>
@@ -174,6 +223,7 @@
                                 </c:forEach>
                             </th>
                             </c:forEach>
+                            <th></th>
                         </tr>
                     </thead> 
                     <tbody>
@@ -182,19 +232,22 @@
                             <td>${stud.id_students}</td>
                             <td>${stud.nombre_students}</td>
                             <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
-                            <c:forEach var="grad" items="${grades}" varStatus="contadorGrades">
-                                <c:if test="${assignments.size()>contadorGrades.index}">
                                 <td class="text-center">
-                                    Stud: ${contadorStud.index}
-                                    <c:forEach var="critGrad" items="${criterias}" varStatus="contadorCrit">
-                                    <div class="col-xs-6 celda">
-                                        ${grad[contadorStud.index][contadorAssig.index]}
-                                    </div>
+                                    <c:forEach var="critGrad" items="${criterias}" varStatus="contadorCrit">  
+                                        <div class="col-xs-6 celda">
+                                            <input data-idStudent="${stud.id_students}" data-idCriteria="${critGrad.id[0]}" class="unStyle" onchange="save()" type="number" width="100%" min="0" max="10" value="${grades[contadorStud.index][contadorAssig.index][contadorCrit.index]}"/>
+                                        </div>
                                     </c:forEach>
-                                </td>
-                                </c:if>   
-                             </c:forEach>     
+                                </td>    
                             </c:forEach>
+                                <td>
+                                    <select class="selectFaces" name="payments" style="width:250px;">
+                                        <option value="" data-description="">Select grade</option>
+                                        <option value="Happy" data-image="<c:url value="/recursos/img/iconos/faceHappy.svg" />" data-description="">Happy</option>
+                                        <option value="Normal" data-image="<c:url value="/recursos/img/iconos/faceNormal.svg" />" data-description="" selected="true">Normal</option>
+                                        <option value="Unhappy" data-image="<c:url value="/recursos/img/iconos/faceUnhappy.svg" />" data-description="">Unhappy</option>
+                                    </select>  
+                                </td>
                         </tr>
                         </c:forEach>  
                         <%--<tr>
@@ -379,12 +432,10 @@ ${contador.index} - ${contadorG.index}
                 </table>
 
             </div>
-            <select id="" class="selectpicker">
-                <option>Select...</option>
-                <option value="1" data-thumbnail="<c:url value="/recursos/img/iconos/faceHappy.png"/>" selected="true">Happy</option>
-                <option value="2" data-thumbnail="<c:url value="/recursos/img/iconos/faceNormal.png"/>">Normal</option>
-                <option value="3" data-thumbnail="<c:url value="/recursos/img/iconos/faceUnhappy.png"/>">Unhappy</option>
-            </select>
+                    <div class="col-xs-12">          
+                        
+         
+    </div> 
         </div>
                     
     </body>
