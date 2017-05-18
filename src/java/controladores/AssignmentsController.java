@@ -145,4 +145,10 @@ public class AssignmentsController {
         return mv;
         
     }
+    @RequestMapping("/assignments/saveRecords.htm")
+ public ModelAndView saveRecords(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
+   ModelAndView mv = new ModelAndView("assignments");
+   String[] data = hsr.getParameterValues("data");
+return mv;   
+ }
 }
