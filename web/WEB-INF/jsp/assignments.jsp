@@ -16,7 +16,7 @@
         <title>Assignments</title>
         <script>
            $(document).ready(function(){
-    
+                
                 var table = $('#tableAssignments').DataTable({
                     paging: false,
                     searching: false,
@@ -27,13 +27,13 @@
                     scrollCollapse: true,
                     columnDefs: [
                         
-                        {   "width": "150px",
+                        {   "width": "10%",
                             "className": "text-left",
                             "targets": [ 1 ]
                         },
-                        {   "width": "auto",
+                        {   "width": "40%",
                             "className": "text-center", 
-                            "targets": "_all"
+                            "targets": '_all'
                         },
                         {
                             "targets": [ 0 ],
@@ -59,10 +59,48 @@
                     trigger : 'hover'
                 });
                      
-           
+                     $(".selectFaces").msDropdown();
   
 
             });
+var tiempo = 60000;
+var ajax;
+var grades;
+            function funcionCallBackLevelStudent()
+    {
+           if (ajax.readyState===4){
+                if (ajax.status===200){
+                    document.getElementById("origen").innerHTML= ajax.responseText;
+                    }
+                }
+            }
+   
+    function save()
+    {
+        
+                var o = {"items":[]}; // create an object with key items to hold array
+           $('.unStyle').each(function(){ // loop in to the input's wrapper
+             var obj = {
+               idStudent :  $(this).attr('data-idStudent'),
+               idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
+               val : $(this).val() // place the name in a new object
+             };
+             o.items.push(obj); // push in the "o" object created
+           });
+
+           $('#console').text(JSON.stringify(o));// strigify to show
+           grades = JSON.stringify(o);
+       
+
+    }
+    function sendgrades()
+    {
+        
+            alert("guardando");
+               ajax.open("POST","studentlistLevel.htm?seleccion="+grades,true);
+               ajax.send("");
+        
+    }    
         </script>
          <style>
             .attempted{
@@ -114,34 +152,45 @@
             .celda{
                 box-sizing: border-box;
                 padding: 0px;
-                border: grey solid thin;
+/*                border: grey solid thin;*/
             }
             .cellCriteria{
                 padding: 0px !important;
             }
             input{
                 box-sizing: border-box;
+                -webkit-appearance:none ;
             }
             input:valid {
-                background-color: green;
+                background-color: lightgray;
+                
             }
             input:invalid {
-                background-color: red;
+                background-color: red !important;
             }
             .flotante {
                 display:scroll;
-                    position:fixed;
-                    bottom:200px;
-                    right:200px;
+                position:fixed;
+                bottom:200px;
+                right:200px;
             }
-            select#grade option[value="good"]   { background-image:url(<c:url value="/recursos/img/iconos/faceHappy.png"/>;)   }
-            select#grade option[value="normal"] { background-image:url(<c:url value="/recursos/img/iconos/faceUnhappy.png"/>;) }
-            select#grade option[value="bad"] { background-image:url(<c:url value="/recursos/img/iconos/faceUnhappy.png"/>;) }
+            .unStyle
+            {
+                text-align: right;
+                background-color: transparent !important;
+                outline: none !important;
+                box-shadow: none;
+                border: none;
+            }
+           
         </style>
     </head>
     <body>
+        <div class="col-xs-12" id="console">
+            
+        </div>
         <div class="span2">
-            <p><button id="saveGrades" class="btn btn-xs flotante"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
+            <p><button id="saveGrades" class="flotante" onclick="sendgrades()"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
             </p>
         </div>
         <div class="container">
@@ -161,91 +210,47 @@
             <hr> 
             </div>
             <div class="col-xs-12" id="divTableGradebook">
-                <table id="tableAssignments" class="display">
+                <table id="tableAssignments" class="display cell-border" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Student ID</th>
                             <th>Student</th>
+                            <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
                             <th class="text-center">
-                                <div class="col-xs-12">Quiz1</div>
-                                <div class="col-xs-3 celda">Criteria1</div>
-                                <div class="col-xs-3 celda">Criteria2</div>
-                                <div class="col-xs-3 celda">Criteria3</div>
-                                <div class="col-xs-3 celda">Criteria4</div>
+                                <div class="col-xs-12">${assig.name}</div>
+                                <c:forEach var="crit" items="${criterias}">
+                                    <div class="col-xs-6 celda">${crit.name}</div>
+                                </c:forEach>
                             </th>
-                            <th class="text-center">
-                                <div class="col-xs-12">Quiz2</div>
-                                <div class="col-xs-4 celda">Criteria1</div>
-                                <div class="col-xs-4 celda">Criteria2</div>
-                                <div class="col-xs-4 celda">Criteria3</div>
-                            </th>
-                            <th class="text-center">
-                                <div class="col-xs-12">Quiz3</div>
-                                <div class="col-xs-6 celda">Criteria1</div>
-                                <div class="col-xs-6 celda">Criteria2</div>
-                            </th>
-                            <%--<c:forEach var="p" items="${categories}" varStatus="contadorC">
-                            <th id="${p.id[0]}"><span data-content="${p.weight}" data-toggle="popover" data-placement="left" data-original-title="${p.description}" data-trigger="hover">${p.name}</span></th>
-                            </c:forEach>--%>
-                            <th>Gradebook Grade</th>
-                            <th>Report Card Grade</th>
+                            </c:forEach>
+                            <th></th>
                         </tr>
                     </thead> 
                     <tbody>
-                        <%--<c:forEach var="s" items="${students}" varStatus="contador">--%>
+                        <c:forEach var="stud" items="${students}" varStatus="contadorStud">
                         <tr>
-                            <td>1</td>
-                            <td>Pepe</td>
-                            <td>
-                                <div class="col-xs-3 celda">
-                                    <input type="number" width="100%" min="0" max="10"/>
-                                </div>
-                                <div class="col-xs-3 celda">
-                                    <input type="number" width="100%" min="0" max="10"/>
-                                </div>
-                                <div class="col-xs-3 celda">
-                                    <input type="number" width="100%" min="0" max="10"/>
-                                </div>
-                                <div class="col-xs-3 celda">
-                                    <input type="number" width="100%" min="0" max="10"/>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-4 celda">
-                                    <input type="text" pattern="[A-F]{1}" maxlength="1" size="2"/>
-                                </div>
-                                <div class="col-xs-4 celda">
-                                    <input type="text" pattern="[A-F]{1}" maxlength="1" size="2"/>
-                                </div>
-                                <div class="col-xs-4 celda">
-                                    <input type="text" pattern="[A-F]{1}" maxlength="1" size="2"/>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="col-xs-6 celda">
-                                    <select id="" class="selectpicker">
-                                        <option data-thumbnail="<c:url value="/recursos/img/iconos/faceHappy.png"/>" selected="true"></option>
-                                        <option data-thumbnail="<c:url value="/recursos/img/iconos/faceNormal.png"/>"></option>
-                                        <option data-thumbnail="<c:url value="/recursos/img/iconos/faceUnhappy.png"/>"></option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-6 celda"></div>
-                            </td>
-                            <%--<td>${s.id_students}</td>
-                            <td>${s.nombre_students}</td>
-                            
-                            <c:forEach var="g" items="${grades}" varStatus="contadorG">
-                                <c:if test="${categories.size()>contadorG.index}">
-                                <td>${grades[contador.index][contadorG.index]}
-                                    <br>
-${contador.index} - ${contadorG.index}
+                            <td>${stud.id_students}</td>
+                            <td>${stud.nombre_students}</td>
+                            <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
+                                <td class="text-center">
+                                    <c:forEach var="critGrad" items="${criterias}" varStatus="contadorCrit">  
+                                        <div class="col-xs-6 celda">
+                                            <input data-idStudent="${stud.id_students}" data-idCriteria="${critGrad.id[0]}" class="unStyle" onchange="save()" type="number" width="100%" min="0" max="10" value="${grades[contadorStud.index][contadorAssig.index][contadorCrit.index]}"/>
+                                        </div>
+                                    </c:forEach>
+                                </td>    
+                            </c:forEach>
+                                <td>
+                                    <select class="selectFaces" name="payments" style="width:250px;">
+                                        <option value="" data-description="">Select grade</option>
+                                        <option value="Happy" data-image="<c:url value="/recursos/img/iconos/faceHappy.svg" />" data-description="">Happy</option>
+                                        <option value="Normal" data-image="<c:url value="/recursos/img/iconos/faceNormal.svg" />" data-description="" selected="true">Normal</option>
+                                        <option value="Unhappy" data-image="<c:url value="/recursos/img/iconos/faceUnhappy.svg" />" data-description="">Unhappy</option>
+                                    </select>  
                                 </td>
-                            </c:if>
-                            </c:forEach>--%>
-                            <td>50</td>
-                            <td>50</td>
                         </tr>
-                        <tr>
+                        </c:forEach>  
+                        <%--<tr>
                             <td>1</td>
                             <td>Pepe</td>
                             <td>
@@ -293,7 +298,7 @@ ${contador.index} - ${contadorG.index}
 ${contador.index} - ${contadorG.index}
                                 </td>
                             </c:if>
-                            </c:forEach>--%>
+                            </c:forEach>
                             <td>50</td>
                             <td>50</td>
                         </tr>
@@ -346,7 +351,7 @@ ${contador.index} - ${contadorG.index}
 ${contador.index} - ${contadorG.index}
                                 </td>
                             </c:if>
-                            </c:forEach>--%>
+                            </c:forEach>
                             <td>50</td>
                             <td>50</td>
                         </tr>
@@ -399,10 +404,10 @@ ${contador.index} - ${contadorG.index}
 ${contador.index} - ${contadorG.index}
                                 </td>
                             </c:if>
-                            </c:forEach>--%>
+                            </c:forEach>
                             <td>50</td>
                             <td>50</td>
-                        </tr>
+                        </tr>--%>
                         <%--</c:forEach>--%>
 <%--                        <tr>
                             <td>2</td>
@@ -427,12 +432,10 @@ ${contador.index} - ${contadorG.index}
                 </table>
 
             </div>
-            <select id="" class="selectpicker">
-                <option>Select...</option>
-                <option value="1" data-thumbnail="<c:url value="/recursos/img/iconos/faceHappy.png"/>" selected="true">Happy</option>
-                <option value="2" data-thumbnail="<c:url value="/recursos/img/iconos/faceNormal.png"/>">Normal</option>
-                <option value="3" data-thumbnail="<c:url value="/recursos/img/iconos/faceUnhappy.png"/>">Unhappy</option>
-            </select>
+                    <div class="col-xs-12">          
+                        
+         
+    </div> 
         </div>
                     
     </body>
