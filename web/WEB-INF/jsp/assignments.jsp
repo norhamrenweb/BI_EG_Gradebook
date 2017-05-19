@@ -78,14 +78,14 @@ var grades;
     function save()
     {
         
-                var o = {"items":[]}; // create an object with key items to hold array
+                var o = new Array();//{"items":[]}; // create an object with key items to hold array
            $('.unStyle').each(function(){ // loop in to the input's wrapper
              var obj = {
                idStudent :  $(this).attr('data-idStudent'),
                idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
                val : $(this).val() // place the name in a new object
              };
-             o.items.push(obj); // push in the "o" object created
+             o.push(obj);//o.items.push(obj); // push in the "o" object created
            });
 
            //$('#console').text(JSON.stringify(o));// strigify to show
@@ -98,11 +98,12 @@ var grades;
         
             alert(grades);
              $.ajax({
-                        type: "GET",
+                        type: "POST",
                         url: "saveRecords.htm",
                         data: grades,
-                        dataType: 'json' ,           
-                     
+                        datatype:"json",
+                        contentType: "application/json",  
+
                         success: function(data) {
                         console.log("success:",data);
                             
