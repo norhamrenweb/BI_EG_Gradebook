@@ -88,7 +88,7 @@ var grades;
              o.items.push(obj); // push in the "o" object created
            });
 
-           $('#console').text(JSON.stringify(o));// strigify to show
+           //$('#console').text(JSON.stringify(o));// strigify to show
            grades = JSON.stringify(o);
        
 
@@ -96,9 +96,25 @@ var grades;
     function sendgrades()
     {
         
-            alert("guardando");
-               ajax.open("POST","studentlistLevel.htm?seleccion="+grades,true);
-               ajax.send("");
+            alert(grades);
+             $.ajax({
+                        type: "GET",
+                        url: "saveRecords.htm",
+                        data: grades,
+                        dataType: 'json' ,           
+                     
+                        success: function(data) {
+                        console.log("success:",data);
+                            
+                            display(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                   console.log(xhr.responseText);
+                                   console.log(thrownError);
+                               }
+
+                    });
         
     }    
         </script>
