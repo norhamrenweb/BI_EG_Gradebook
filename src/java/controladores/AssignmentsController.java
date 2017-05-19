@@ -10,6 +10,8 @@ package controladores;
  * @author nmohamed
  */
 import Montessori.*;
+import atg.taglib.json.util.JSONObject;
+import com.google.gson.Gson;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -146,9 +150,34 @@ public class AssignmentsController {
         
     }
     @RequestMapping("/assignments/saveRecords.htm")
- public ModelAndView saveRecords(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
+ public ModelAndView saveRecords(@RequestBody Grade[] grades, HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
    ModelAndView mv = new ModelAndView("assignments");
-   String[] data = hsr.getParameterValues("data");
+   String message = null;
+   try {
+         DriverManagerDataSource dataSource;
+        dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
+        this.cn = dataSource.getConnection();
+          Statement st = this.cn.createStatement();
+            
+              for(Grade g:grades)
+              {
+               String consulta ="select id from student_grades where student_id = "+g.getIdStudent()+" and criteria_id="+g.getIdCrit();
+               ResultSet rs1 = st.executeQuery(consulta);
+               if(rs1.next()){
+                   consulta ="update student_grades set grade ="+g.getVal()+" where student_id ="+g.getIdStudent()+" and criteria_id ="+g.getIdCrit();
+               st.executeUpdate(consulta);
+               }
+               else{
+                    consulta ="insert into student_grades(grade,student_id,criteria_id) values("+g.getVal()+","+g.getIdStudent()+","+g.getIdCrit()+")";
+               st.executeUpdate(consulta);
+               }
+              }
+              message = "Grades successfully updated";
+               }catch (SQLException ex) {
+            System.out.println("Error: " + ex);
+            message = "Something went wrong";
+        }
+   mv.addObject("message", message);
 return mv;   
  }
 }
