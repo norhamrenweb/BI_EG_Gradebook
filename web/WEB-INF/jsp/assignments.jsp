@@ -16,7 +16,33 @@
         <title>Assignments</title>
         <script>
            $(document).ready(function(){
-                
+            var userLang = navigator.language || navigator.userLanguage;
+        $('#dateStart').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: userLang.valueOf(),
+            daysOfWeekDisabled: [0, 6]
+        });
+        
+        $('#dateEnd').datetimepicker({
+            
+            format: 'YYYY-MM-DD',
+            locale: userLang.valueOf(),
+            daysOfWeekDisabled: [0, 6]
+        });
+        
+        $("#dateStart").on("dp.change", function (e) {
+            $('#dateEnd').data("DateTimePicker").minDate(e.date);
+        });       
+        
+        $("#dateEnd").on("dp.change", function (e) {
+            $('#dateStart').data("DateTimePicker").maxDate(e.date);
+        });
+        var termSelected = $("#TermSelected").val();
+        
+        //AÑADE EL TERM AL CREATE ASSIGMENT
+         $("#CreateAssigTermSelected").val(termSelected);
+        
+        
                 var table = $('#tableAssignments').DataTable({
                     paging: false,
                     searching: false,
@@ -59,13 +85,18 @@
                     trigger : 'hover'
                 });
                      
-                     $(".selectFaces").msDropdown();
+                $(".selectFaces").msDropdown();
   
 
             });
+        function  changeTerm(){
+            termSelected = $("#TermSelected").val();
+            $("#CreateAssigTermSelected").val(termSelected);
+        }
 var tiempo = 60000;
 var ajax;
 var grades;
+var o = new Array();//{"items":[]}; // create an object with key items to hold array
             function funcionCallBackLevelStudent()
     {
            if (ajax.readyState===4){
@@ -75,17 +106,19 @@ var grades;
                 }
             }
    
-    function save()
+    function save(idStudentChange)
     {
         
-                var o = new Array();//{"items":[]}; // create an object with key items to hold array
+                
            $('.unStyle').each(function(){ // loop in to the input's wrapper
              var obj = {
                idStudent :  $(this).attr('data-idStudent'),
                idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
                val : $(this).val() // place the name in a new object
              };
+             if(obj.idStudent === idStudentChange.toString()){
              o.push(obj);//o.items.push(obj); // push in the "o" object created
+                }
            });
 
            //$('#console').text(JSON.stringify(o));// strigify to show
@@ -107,7 +140,7 @@ var grades;
                         success: function(data) {
                         console.log("success:",data);
                             
-                            display(data);
+                            //display(data);
                         },
                         error: function (xhr, ajaxOptions, thrownError) {
                                 console.log(xhr.status);
@@ -203,25 +236,27 @@ var grades;
         </style>
     </head>
     <body>
-        <div class="col-xs-12" id="console">
+      <button id="saveGrades" class="flotante" onclick="sendgrades()"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
             
-        </div>
-        <div class="span2">
-            <p><button id="saveGrades" class="flotante" onclick="sendgrades()"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
-            </p>
-        </div>
         <div class="container">
-            <div class="col-xs-12">
+            <div class="row">
                 <div class="col-xs-4">
                     <label>Term:</label>
-                    <select>
+                    <select id="TermSelected" onchange="changeTerm()">
                         <option>Q1</option>
                         <option>Q2</option>
-                        <option>Q3</option>
+                        <option selected>Q3</option>
                     </select>
                     
                 </div>
-               
+                <div class="col-xs-4">
+
+                </div>
+                <div class="col-xs-4">
+                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" id="buttomModalObjective">
+                        Add Assigment
+                    </button>
+                </div>
             </div>
             <div class="col-xs-12">
             <hr> 
@@ -252,7 +287,7 @@ var grades;
                                 <td class="text-center">
                                     <c:forEach var="critGrad" items="${criterias}" varStatus="contadorCrit">  
                                         <div class="col-xs-6 celda">
-                                            <input data-idStudent="${stud.id_students}" data-idCriteria="${critGrad.id[0]}" class="unStyle" onchange="save()" type="number" width="100%" min="0" max="10" value="${grades[contadorStud.index][contadorAssig.index][contadorCrit.index]}"/>
+                                            <input data-idStudent="${stud.id_students}" data-idCriteria="${critGrad.id[0]}" class="unStyle" onchange="save(${stud.id_students})" type="number" width="100%" min="0" max="10" value="${grades[contadorStud.index][contadorAssig.index][contadorCrit.index]}"/>
                                         </div>
                                     </c:forEach>
                                 </td>    
@@ -453,7 +488,83 @@ ${contador.index} - ${contadorG.index}
                         
          
     </div> 
-        </div>
-                    
+        </div>      
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Create Assigment</h4>
+                        </div>
+                        <div class="modal-body" id="modal-CreateAssigment">
+                            <form:form id="formCreateAssigment" method ="post" action="createsetting.htm?select=createsetting" >
+                                <fieldset> 
+                                        <div class="col-xs-6 center-block form-group">
+                                            <label class="control-label">Category</label>
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditcategory" readonly="">
+                                        </div>
+                                        <div class="col-xs-6 center-block form-group">
+                                            <label class="control-label">Term</label>
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="CreateAssigTermSelected" readonly="">
+                                        </div>
+                                </fieldset>
+                                <fieldset> 
+                                        <div class="col-xs-4 center-block form-group">
+                                            <label class="control-label">Assigment</label>
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditcategory"  placeholder="Name">
+                                        </div>
+                                        <div class="col-xs-8 center-block form-group">
+                                            <label class="control-label">Description</label>
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptioneditcategory"  placeholder="Description">
+                                        </div>
+<!--                                        <div class="col-xs-1 center-block form-group">
+                                            <label class="control-label">Points</label>
+                                            <input type="number" class="form-control" name="TXTnamenewmethod" id="weighteditcategory"  placeholder="0">
+                                        </div>-->
+                                </fieldset>
+                                <fieldset> 
+                                     <div class="col-xs-6 center-block form-group">
+                                         <label class="control-label">Start Assigment</label>
+                                            <div class='input-group date' id='dateStart'>
+                                                <input type='text' name="TXTdateStart" id="TXTdateStart" class="form-control"/>
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 center-block form-group">
+                                            <label class="control-label">End Assigment</label>
+                                            <div class='input-group date' id='dateEnd'>       
+                                                <input type='text' name="TXTdateEnd" id="TXTdateEnd" class="form-control" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                </fieldset>
+                                <fieldset>
+                                    <div class="col-xs-6 center-block form-group">
+                                        <label class="control-label">EL assigment tiene los siguientes criterias heredados de la categoria</label>
+                                        <c:forEach var="crit" items="${criterias}">
+                                            <div class="col-xs-12">${crit.name}</div>
+                                        </c:forEach>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                <div class="col-xs-12 center-block form-group text-right">
+                                    <input type="button" name="AddCategory" value="save" class="btn btn-success" id="AddAssigment" data-target=".bs-example-modal-lg" onclick="addAssigment()"/>
+                                </div>
+                                </fieldset>
+                            </form:form>
+                        </div>
+<!--                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+          
     </body>
 </html>

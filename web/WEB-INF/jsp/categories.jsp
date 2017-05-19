@@ -48,14 +48,14 @@ $("#method").on('mouseover', 'option' , function(e) {
             function editCategory(id)
             {
                 $('#EditCategory').removeClass('hidden');
-
+                $('#createCategory').removeClass('in');
                 $('#DelCategory').val(data[0]);
                 $('#nameeditcategory').val(data[1]);
                 $('#descriptioneditcategory').val(data[2]);
                 $('#weighteditcategory').val(data[3]);
                 
             }
-
+            
           
           
 
@@ -599,12 +599,8 @@ $("#method").on('mouseover', 'option' , function(e) {
                     $('#descriptionnewobjective').val('');
                     $('#content').empty();
                 });
-                 $('#showCreateCategory').click(function () {
-                    $('#CreateCategory').toggle(display); 
-//                    $('#objective').empty();
-//                    $('#namenewobjective').val('');
-//                    $('#descriptionnewobjective').val('');
-//                    $('#content').empty();
+                 $('#btnShowCreate').click(function () {
+                    $('#EditCategory').addClass('hidden'); 
                 });
                 
             });
@@ -616,6 +612,10 @@ $("#method").on('mouseover', 'option' , function(e) {
             }
              .popover{
                 width: 500px;
+            }
+            .panel-body
+            {
+                padding: 0px;
             }
         </style>
     </head>
@@ -654,13 +654,12 @@ $("#method").on('mouseover', 'option' , function(e) {
             </div>
             <div class="col-xs-12" style="margin-top: 40px;">
                 <hr>
-<!--                <button id="showCreateCategory" class="btn btn"><span class="glyphicon glyphicon-plus-sign"></span></button>-->
             </div>
             <div class="panel-group" >
                 <div class="panel ">
                   <div class="" role="tab" id="headingOne">
                     <h4 class="">
-                        <button data-toggle="collapse" href="#createCategory" aria-expanded="true" aria-controls="collapseOne" class="btn btn-success">
+                        <button id="btnShowCreate" data-toggle="collapse" href="#createCategory" aria-expanded="true" aria-controls="collapseOne" class="btn btn-success">
                             <span class="glyphicon glyphicon-plus-sign"></span>
                         </button>
                     </h4>
@@ -707,45 +706,54 @@ $("#method").on('mouseover', 'option' , function(e) {
                   </div>
                 </div>
             </div>
-            <div class="col-xs-12 hidden" id="EditCategory">
-                <form:form id="formCreateCategories" method ="post" action="createsetting.htm?select=createsetting" >
-                            <fieldset id="formCreateCategory">
-                                <legend>Edit category</legend>  
-                                <div class="col-xs-12">
-                                    <div class="col-xs-3 center-block form-group">
-                                        <label class="control-label">Edit category</label>
-                                        <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditcategory"  placeholder="Name">
-                                    </div>
-                                    <div class="col-xs-7 center-block form-group">
-                                        <label class="control-label">Description</label>
-                                        <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptioneditcategory"  placeholder="Description">
-                                    </div>
-                                    <div class="col-xs-1 center-block form-group">
-                                        <label class="control-label">Weight</label>
-                                        <input type="number" class="form-control" name="TXTnamenewmethod" id="weighteditcategory"  placeholder="0">
-                                    </div>
-                                    <div class="col-xs-1 center-block form-group paddingLabel">
-                                        <input type="button" name="AddCategory" value="save" class="btn btn-success" id="Addcategory" data-target=".bs-example-modal-lg" onclick="saveaddMethod()"/>
-                                    </div>
+            <div class="row hidden" id="EditCategory">
+                <div class="col-xs-11">
+                    <form:form id="formCreateCategories" method ="post" action="createsetting.htm?select=createsetting" >
+                        <fieldset id="formCreateCategory">
+                            <legend>Edit category</legend>  
+                            <div class="row">
+                                <div class="col-xs-3 center-block form-group">
+                                    <label class="control-label">Edit category</label>
+                                    <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditcategory"  placeholder="Name">
                                 </div>
-                                <div class="col-xs-6 col-xs-offset-3">
-                                    <div class="col-xs-4">
-                                        <label class="control-label">T1</label>
-                                        <input type="checkbox" name="t1" class="checkbox-inline checkbox-success">
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <label class="control-label">T2</label>
-                                        <input type="checkbox" name="t2" class="checkbox-success">
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <label class="control-label">T3</label>
-                                        <input type="checkbox" name="t3" class="checkbox-success">
-                                    </div>
+                                <div class="col-xs-7 center-block form-group">
+                                    <label class="control-label">Description</label>
+                                    <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptioneditcategory"  placeholder="Description">
                                 </div>
-                            </fieldset> 
-                        </form:form>
-                <div class="col-xs-12 text-right">
-                    <button id="DelCategory" class="btn btn-danger">Del</button>
+                                <div class="col-xs-1 center-block form-group">
+                                    <label class="control-label">Weight</label>
+                                    <input type="number" class="form-control" name="TXTnamenewmethod" id="weighteditcategory"  placeholder="0">
+                                </div>
+                                <div class="col-xs-1 center-block form-group paddingLabel">
+                                    <input type="button" name="AddCategory" value="save" class="btn btn-success" id="Addcategory" data-target=".bs-example-modal-lg" onclick="saveaddMethod()"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-xs-offset-3">
+                                <div class="col-xs-4">
+                                    <label class="control-label">T1</label>
+                                    <input type="checkbox" name="t1" class="checkbox-inline checkbox-success">
+                                </div>
+                                <div class="col-xs-4">
+                                    <label class="control-label">T2</label>
+                                    <input type="checkbox" name="t2" class="checkbox-success">
+                                </div>
+                                <div class="col-xs-4">
+                                    <label class="control-label">T3</label>
+                                    <input type="checkbox" name="t3" class="checkbox-success">
+                                </div>
+                            </div>
+                        </fieldset> 
+                    </form:form>
+                </div>
+                <div class="col-xs-1 text-center">
+                     <form:form id="formCreateCategories" method ="post" action="createsetting.htm?select=createsetting" >
+                        <fieldset id="formCreateCategory">
+                            <div class="row" style="padding-top: 30px;">
+                            <legend> </legend>
+                            <button id="DelCategory" class="btn btn-danger" style="margin-top: 25px;">Del</button>
+                            </div>
+                        </fieldset>
+                     </form:form>
                 </div>
             </div>
             <div class="col-xs-12 hidden" id="CreateCategory">
