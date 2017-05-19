@@ -132,7 +132,7 @@
     </head>
     <body>
         <div class="container">
-            <div class="col-xs-12">
+            <div class="row">
                 <div class="col-xs-4">
                     <label>Term:</label>
                     <select>
@@ -142,7 +142,15 @@
                     </select>
                     
                 </div>
-               
+                <div class="col-xs-4"></div>
+                <div class="col-xs-4">
+                    <a href="<c:url value="/categories/loadCategories.htm?ClassSelected=1"/>">
+                        <div class="center-block">
+                            Categories
+<%--                            <input type="image" src="<c:url value="/recursos/img/iconos/Calendar-01.svg"/>" data-toggle="tooltip" data-placement="top" title="View calendar">--%>
+                        </div>
+                    </a>
+                </div>
             </div>
             <div class="col-xs-12">
             <hr> 

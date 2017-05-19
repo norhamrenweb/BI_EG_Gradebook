@@ -59,6 +59,7 @@
         <bean class="controladores.EditLessonControlador" id="editlesson"/>
 <bean class="controladores.CerrarLogin" id="cerrarLoginController"/>
 <bean class="controladores.AssignmentsController" id="assignments"/>
+<bean class="controladores.CategoriesController" id="categories"/>
 
 
   
@@ -85,6 +86,7 @@
                  <prop key="studentpage.htm">studentprog</prop> 
                  <prop key="studentpage_1.htm">studentprog</prop> 
                  <prop key="assignments.htm">assignments</prop>
+                 <prop key="categories.htm">categories</prop>
              <prop key="lessonidea.htm">lessonidea</prop>
              <prop key="editlesson.htm">editlesson</prop>
                 <prop key="cerrarLogin.htm">cerrarLoginController</prop>
