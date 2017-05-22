@@ -62,12 +62,17 @@ public class AssignmentsController {
         dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
         this.cn = dataSource.getConnection();
      String classid = "474";//hsr.getParameter("classSelected");
-     String catgid = "1";
+     String[] catgid = new String[1];
+     catgid[0]= "1";
      String termid = "1";
      String courseid = "164"; // based on the course setting
 //     DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 //Date lessondate = format.parse(hsr.getParameter("seleccion5"));
-        
+          Category cat = new Category();
+          String tmp = cat.fetchName(Integer.parseInt(catgid[0]), hsr.getServletContext());
+          cat.setName(tmp);
+          cat.setId(catgid);
+         mv.addObject("category",cat);
          Statement st = this.cn.createStatement();
 
 //Query for retrieving students enrolled in the sleected class in the term selected(Enrolled# says the term)
@@ -86,7 +91,7 @@ public class AssignmentsController {
         this.cn = dataSource.getConnection();
  // query for retrieving the catgeories names and their weights based on the class id
             Statement st2 = this.cn.createStatement(); 
-            consulta ="select id,name,description from assignments where catg_id = "+catgid;
+            consulta ="select id,name,description from assignments where catg_id = "+catgid[0];
             ResultSet rs1 = st2.executeQuery(consulta);
             while(rs1.next())
             {
@@ -99,7 +104,7 @@ public class AssignmentsController {
                
                 assignments.add(a);   
             }
-            consulta ="select id,name from criteria_catg where catg_id ="+catgid;
+            consulta ="select id,name from criteria_catg where catg_id ="+catgid[0];
             ResultSet rs2 = st2.executeQuery(consulta);
             while(rs2.next())
             {
@@ -125,11 +130,11 @@ public class AssignmentsController {
                  for(Criteria x:criterias){ 
                      String[] id2 = new String[1];
                       id2 =x.getId();
-                consulta ="select grade from student_grades where student_id = " +s.getId_students()+"and assignmentid = "+id[0]+" and criteria_id = "+id2[0];
+                consulta ="select symbol from student_grades where student_id = " +s.getId_students()+"and assignmentid = "+id[0]+" and criteria_id = "+id2[0];
             ResultSet rs3 = st2.executeQuery(consulta);
             while(rs3.next())
             {
-                grades[studentcount][assignmentcount][criteriacount]= ""+rs3.getDouble("grade");
+                grades[studentcount][assignmentcount][criteriacount]= ""+rs3.getString("symbol");
                         
             }
                  criteriacount = criteriacount+1;  
@@ -155,21 +160,41 @@ public class AssignmentsController {
    String message = null;
    try {
          DriverManagerDataSource dataSource;
-        dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
+        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
         this.cn = dataSource.getConnection();
           Statement st = this.cn.createStatement();
             
               for(Grade g:grades)
               {
-               String consulta ="select id from student_grades where student_id = "+g.getIdStudent()+" and criteria_id="+g.getIdCrit();
+                  String consulta = "SELECT type_id FROM criteria_catg where id = "+g.getIdCrit();
+            ResultSet rs = st.executeQuery(consulta);
+            String typeid = null;
+            while(rs.next())
+            {
+            typeid =""+rs.getInt("type_id");
+            }
+                consulta ="select id from student_grades where student_id = "+g.getIdStudent()+" and criteria_id="+g.getIdCrit()+" and assignmentid= "+g.getAssignmentid();
                ResultSet rs1 = st.executeQuery(consulta);
                if(rs1.next()){
-                   consulta ="update student_grades set grade ="+g.getVal()+" where student_id ="+g.getIdStudent()+" and criteria_id ="+g.getIdCrit();
+                       
+                   if(g.getVal()!="" && g.getVal()!= null){//assuming that the grade symbol will be converted in the jsp page to its code
+                   String grade = g.getSymbolGrade(typeid,g.getVal(),hsr.getServletContext());
+                   consulta ="update student_grades set symbol ="+g.getVal()+",type_id= "+typeid+",grade = "+grade+" where student_id ="+g.getIdStudent()+" and criteria_id ="+g.getIdCrit()+" and assignmentid= "+g.getAssignmentid();
                st.executeUpdate(consulta);
-               }
+                   }
+                  else
+                  {
+                      consulta ="delete from student_grades where student_id = "+g.getIdStudent()+" and criteria_id="+g.getIdCrit()+"and assignmentid= "+g.getAssignmentid();
+               st.executeUpdate(consulta);
+                  }
+                   }
                else{
-                    consulta ="insert into student_grades(grade,student_id,criteria_id) values("+g.getVal()+","+g.getIdStudent()+","+g.getIdCrit()+")";
+                  if(g.getVal()!="" && g.getVal()!= null){
+                         String grade= g.getSymbolGrade(typeid,g.getVal(),hsr.getServletContext());
+                    consulta ="insert into student_grades(symbol,type_id,grade,student_id,criteria_id,assignmentid) values('"+g.getVal()+"','"+typeid+"','"+grade+"','"+g.getIdStudent()+"','"+g.getIdCrit()+"','"+g.getAssignmentid()+"')";
                st.executeUpdate(consulta);
+                 }
+                  
                }
               }
               message = "Grades successfully updated";
@@ -180,4 +205,25 @@ public class AssignmentsController {
    mv.addObject("message", message);
 return mv;   
  }
+ @RequestMapping("/assignments/saveAssign.htm")
+public ModelAndView saveAssign(@RequestBody Assignment assignment, HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
+   String message = null;
+    ModelAndView mv = new ModelAndView("redirect:/assignments/loadRecords.htm","message", message);
+   
+   try {
+         DriverManagerDataSource dataSource;
+        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
+        this.cn = dataSource.getConnection();
+          Statement st = this.cn.createStatement();
+          String[] catgid = hsr.getParameterValues("catid");
+          String consulta = "insert into assignments(name,description,start,finish,catg_id) values('"+assignment.getName()+"','"+assignment.getDescription()+"','"+assignment.getStart()+"','"+assignment.getFinish()+"','"+catgid[0]+"')";
+          st.executeUpdate(consulta);
+           message = "Assignment successfully saved";
+               }catch (SQLException ex) {
+            System.out.println("Error: " + ex);
+            message = "Something went wrong";
+        }
+   mv.addObject("message", message);
+return mv;   
+}
 }

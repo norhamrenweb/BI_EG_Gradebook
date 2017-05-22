@@ -82,7 +82,7 @@ public class Category {
         this.cn = dataSource.getConnection();
              Statement st = this.cn.createStatement();
              
-            String consulta = "SELECT name FROM public.objective where id = "+id;
+            String consulta = "SELECT name FROM category where id = "+id;
             ResultSet rs = st.executeQuery(consulta);
           
             while (rs.next())
