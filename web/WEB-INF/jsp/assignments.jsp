@@ -96,7 +96,7 @@
 
                     var obj = {
                     idStudent :  $(this).attr('data-idStudent'),
-                    idAssigment :  $(this).attr('data-idAssigment'),
+                    assignmentid :  $(this).attr('data-idAssigment'),
                     idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
                     val : $(this).val() // place the name in a new object
                   };
@@ -123,7 +123,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
               
                var obj = {
                idStudent :  $(this).attr('data-idStudent'),
-               idAssigment :  $(this).attr('data-idAssigment'),
+               assignmentid :  $(this).attr('data-idAssigment'),
                idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
                val : $(this).val() // place the name in a new object
              };
@@ -131,7 +131,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
 
            });
 
-           $('#console').text(JSON.stringify(o));// strigify to show
+          // $('#console').text(JSON.stringify(o));// strigify to show
            gradesModi = JSON.stringify(o);
        
 
@@ -141,8 +141,8 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
 
     function sendgrades()
     {
-        alert(gradesPrevious);
-        alert(o);
+//        alert(gradesPrevious);
+//        alert(o);
          var diff = new Array();   
 //        if(gradesOri !== gradesModi) {
            $.each(o, function(i, item) {
@@ -160,25 +160,25 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
        
 
 
-//             $.ajax({
-//                        type: "POST",
-//                        url: "saveRecords.htm",
-//                        data: diff,
-//                        datatype:"json",
-//                        contentType: "application/json",  
-//
-//                        success: function(data) {
-//                        console.log("success:",data);
-//                            
-//                            //display(data);
-//                        },
-//                        error: function (xhr, ajaxOptions, thrownError) {
-//                                console.log(xhr.status);
-//                                   console.log(xhr.responseText);
-//                                   console.log(thrownError);
-//                               }
-//
-//                    });
+             $.ajax({
+                        type: "POST",
+                        url: "saveRecords.htm",
+                        data: mierda,
+                        datatype:"json",
+                        contentType: "application/json",  
+
+                        success: function(data) {
+                        console.log("success:",data);
+                            
+                            //display(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                   console.log(xhr.responseText);
+                                   console.log(thrownError);
+                               }
+
+                    });
         
     }    
         </script>
