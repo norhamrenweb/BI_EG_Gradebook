@@ -15,7 +15,11 @@
     <%@ include file="menu.jsp" %>
         <title>Assignments</title>
         <script>
+            var gradesPrevious = new Array();
+            var ajax;
+            var data = new Array();
            $(document).ready(function(){
+               
             var userLang = navigator.language || navigator.userLanguage;
         $('#dateStart').datetimepicker({
             format: 'YYYY-MM-DD',
@@ -86,50 +90,71 @@
                 });
                      
                 $(".selectFaces").msDropdown();
-  
+                //CREO UN ARRAY CON LOS VALORES INICIALES
+                
+                $('.unStyle').each(function(){ // loop in to the input's wrapper
 
+                    var obj = {
+                    idStudent :  $(this).attr('data-idStudent'),
+                    idAssigment :  $(this).attr('data-idAssigment'),
+                    idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
+                    val : $(this).val() // place the name in a new object
+                  };
+                gradesPrevious.push(obj);
+
+                });
+                gradesOri = JSON.stringify(gradesPrevious);
             });
         function  changeTerm(){
             termSelected = $("#TermSelected").val();
             $("#CreateAssigTermSelected").val(termSelected);
         }
-var tiempo = 60000;
-var ajax;
-var grades;
+
+
 var o = new Array();//{"items":[]}; // create an object with key items to hold array
-            function funcionCallBackLevelStudent()
-    {
-           if (ajax.readyState===4){
-                if (ajax.status===200){
-                    document.getElementById("origen").innerHTML= ajax.responseText;
-                    }
-                }
-            }
+    
    
-    function save(idStudentChange)
+    function save()
     {
+            var o = new Array();//{"items":[]}; // create an object with key items to hold array
         
                 
            $('.unStyle').each(function(){ // loop in to the input's wrapper
-             var obj = {
+              
+               var obj = {
                idStudent :  $(this).attr('data-idStudent'),
+               idAssigment :  $(this).attr('data-idAssigment'),
                idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
                val : $(this).val() // place the name in a new object
              };
-             if(obj.idStudent === idStudentChange.toString()){
-             o.push(obj);//o.items.push(obj); // push in the "o" object created
-                }
+             o.push(obj);
+
            });
 
-           //$('#console').text(JSON.stringify(o));// strigify to show
-           grades = JSON.stringify(o);
+           $('#console').text(JSON.stringify(o));// strigify to show
+           gradesModi = JSON.stringify(o);
        
 
     }
+
+
+    
     function sendgrades()
     {
+        alert(gradesOri);
+        alert(gradesModi);
         
-            alert(grades);
+        if(gradesOri !== gradesModi) { 
+            alert("mierda");
+        }
+        
+         $.each(gradesOri, function(index){
+             if (!gradesModi[index]){
+                 data.push(gradesModi);
+             }
+             });
+
+
              $.ajax({
                         type: "POST",
                         url: "saveRecords.htm",
@@ -239,6 +264,9 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
       <button id="saveGrades" class="flotante" onclick="sendgrades()"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
             
         <div class="container">
+            <div class="row" id="console">
+                
+            </div>
             <div class="row">
                 <div class="col-xs-4">
                     <label>Term:</label>
@@ -287,7 +315,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
                                 <td class="text-center">
                                     <c:forEach var="critGrad" items="${criterias}" varStatus="contadorCrit">  
                                         <div class="col-xs-6 celda">
-                                            <input data-idStudent="${stud.id_students}" data-idCriteria="${critGrad.id[0]}" class="unStyle" onchange="save(${stud.id_students})" type="number" width="100%" min="0" max="10" value="${grades[contadorStud.index][contadorAssig.index][contadorCrit.index]}"/>
+                                            <input data-idStudent="${stud.id_students}" data-idAssigment="${assig.id[0]}" data-idCriteria="${critGrad.id[0]}" class="unStyle" onchange="save()" type="number" width="100%" min="0" max="10" value="${grades[contadorStud.index][contadorAssig.index][contadorCrit.index]}"/>
                                         </div>
                                     </c:forEach>
                                 </td>    
