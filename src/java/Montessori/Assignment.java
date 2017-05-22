@@ -21,7 +21,26 @@ public class Assignment {
     private String name;
 private String description;
 private Category obj;
+private String start;
+private String finish;
 Connection cn;
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getFinish() {
+        return finish;
+    }
+
+    public void setFinish(String finish) {
+        this.finish = finish;
+    }
+
     public Category getObj() {
         return obj;
     }
@@ -66,7 +85,7 @@ Connection cn;
         this.cn = dataSource.getConnection();
              Statement st = this.cn.createStatement();
              
-            String consulta = "SELECT name FROM public.content where id = "+id;
+            String consulta = "SELECT name FROM assignments where id = "+id;
             ResultSet rs = st.executeQuery(consulta);
           
             while (rs.next())
@@ -77,7 +96,7 @@ Connection cn;
             //this.finalize();
             
         } catch (SQLException ex) {
-            System.out.println("Error reading methods: " + ex);
+            System.out.println("Error : " + ex);
         }
        
         return name;
