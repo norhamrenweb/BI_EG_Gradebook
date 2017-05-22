@@ -109,7 +109,39 @@
             termSelected = $("#TermSelected").val();
             $("#CreateAssigTermSelected").val(termSelected);
         }
+function addAssigment(){
+    var name = document.getElementById("nameeditassignment").value;
+    var dscrp = document.getElementById("descriptioneditassignment").value;
+    var start = document.getElementById("TXTdateStart").value;
+    var finish = document.getElementById("TXTdateEnd").value;
+    var catid = document.getElementById("idcategory").value;
+     var data = {
+               name :  name,
+               description :dscrp,
+                start : start,
+                 finish :  finish
+             };
+      $.ajax({
+                        type: "POST",
+                        url: "saveAssign.htm?catid="+catid,
+                        data: JSON.stringify(data),
+                        datatype:"json",
+                        contentType: "application/json",  
 
+                        success: function(data) {
+                        console.log("success:",data);
+                            
+                            //display(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                   console.log(xhr.responseText);
+                                   console.log(thrownError);
+                               }
+
+                    });        
+    
+    }
 
 var o = new Array();//{"items":[]}; // create an object with key items to hold array
     
@@ -524,7 +556,7 @@ ${contador.index} - ${contadorG.index}
         </div>      
 
             <!-- Modal -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -536,7 +568,8 @@ ${contador.index} - ${contadorG.index}
                                 <fieldset> 
                                         <div class="col-xs-6 center-block form-group">
                                             <label class="control-label">Category</label>
-                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditcategory" readonly="">
+                                             <input type="hidden" class="form-control" name="TXTidcategory" id="idcategory" value ="${category.id[0]}" readonly="">
+                                            <input type="text" class="form-control" name="TXTnamecategory" id="namecategory" value ="${category.name}" readonly="">
                                         </div>
                                         <div class="col-xs-6 center-block form-group">
                                             <label class="control-label">Term</label>
@@ -546,11 +579,11 @@ ${contador.index} - ${contadorG.index}
                                 <fieldset> 
                                         <div class="col-xs-4 center-block form-group">
                                             <label class="control-label">Assigment</label>
-                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditcategory"  placeholder="Name">
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditassignment"  placeholder="Name">
                                         </div>
                                         <div class="col-xs-8 center-block form-group">
                                             <label class="control-label">Description</label>
-                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptioneditcategory"  placeholder="Description">
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptioneditassignment"  placeholder="Description">
                                         </div>
 <!--                                        <div class="col-xs-1 center-block form-group">
                                             <label class="control-label">Points</label>
@@ -587,7 +620,7 @@ ${contador.index} - ${contadorG.index}
                                 </fieldset>
                                 <fieldset>
                                 <div class="col-xs-12 center-block form-group text-right">
-                                    <input type="button" name="AddCategory" value="save" class="btn btn-success" id="AddAssigment" data-target=".bs-example-modal-lg" onclick="addAssigment()"/>
+                                    <input type="button" name="AddCategory" value="save" data-dismiss="modal" class="btn btn-success" id="AddAssigment" data-target=".bs-example-modal-lg" onclick="addAssigment()"/>
                                 </div>
                                 </fieldset>
                             </form:form>
