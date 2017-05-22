@@ -17,7 +17,7 @@
         <script>
             var gradesPrevious = new Array();
             var ajax;
-            var data = new Array();
+            
            $(document).ready(function(){
                
             var userLang = navigator.language || navigator.userLanguage;
@@ -116,7 +116,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
    
     function save()
     {
-            var o = new Array();//{"items":[]}; // create an object with key items to hold array
+            o = new Array();//{"items":[]}; // create an object with key items to hold array
         
                 
            $('.unStyle').each(function(){ // loop in to the input's wrapper
@@ -138,42 +138,47 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
     }
 
 
-    
+
     function sendgrades()
     {
-        alert(gradesOri);
-        alert(gradesModi);
+        alert(gradesPrevious);
+        alert(o);
+         var diff = new Array();   
+//        if(gradesOri !== gradesModi) {
+           $.each(o, function(i, item) {
+               if(gradesPrevious[i].idStudent === o[i].idStudent && gradesPrevious[i].idAssigment === o[i].idAssigment && gradesPrevious[i].idCrit === o[i].idCrit && gradesPrevious[i].val !== o[i].val){
+                   diff.push(item); 
+            }
+            });
+            var mierda = JSON.stringify(diff);
+            alert(mierda);
+            
+//        }
         
-        if(gradesOri !== gradesModi) { 
-            alert("mierda");
-        }
-        
-         $.each(gradesOri, function(index){
-             if (!gradesModi[index]){
-                 data.push(gradesModi);
-             }
-             });
 
 
-             $.ajax({
-                        type: "POST",
-                        url: "saveRecords.htm",
-                        data: grades,
-                        datatype:"json",
-                        contentType: "application/json",  
+       
 
-                        success: function(data) {
-                        console.log("success:",data);
-                            
-                            //display(data);
-                        },
-                        error: function (xhr, ajaxOptions, thrownError) {
-                                console.log(xhr.status);
-                                   console.log(xhr.responseText);
-                                   console.log(thrownError);
-                               }
 
-                    });
+//             $.ajax({
+//                        type: "POST",
+//                        url: "saveRecords.htm",
+//                        data: diff,
+//                        datatype:"json",
+//                        contentType: "application/json",  
+//
+//                        success: function(data) {
+//                        console.log("success:",data);
+//                            
+//                            //display(data);
+//                        },
+//                        error: function (xhr, ajaxOptions, thrownError) {
+//                                console.log(xhr.status);
+//                                   console.log(xhr.responseText);
+//                                   console.log(thrownError);
+//                               }
+//
+//                    });
         
     }    
         </script>
