@@ -71,18 +71,16 @@
                             "searchable": false
                         }]
                 });
-//                $('#tableAssignments tbody')
-//                    .on( 'mouseenter', 'td', function () {
-//                        var colIdx = table.cell(this).index().column;
-//
-//                        $( table.cells().nodes() ).removeClass( 'highlight' );
-//                        $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
-//                    } );
+                
                     
-                $('select.selectpicker').selectpicker();    
+                $('select.selectpicker').selectpicker();
+                
                 $( "th" ).click(function() {   
-                    var idCategory = $(this).attr('id');
-                    window.location.replace("<c:url value="/assignments/loadRecords.htm?ClassSelected="/>"+idCategory);
+                    var idAssigment = $(this).attr('id');
+                    $('#delAssigment').val(idAssigment);
+                    $('#buttomModalEdit').click();
+                    
+                    <%---window.location.replace("<c:url value="/assignments/loadRecords.htm?ClassSelected="/>"+idCategory);---%>
                 });
                 $('[data-toggle="popover"]').popover({
                     placement : 'top',
@@ -129,7 +127,11 @@ function addAssigment(){
                         contentType: "application/json",  
 
                         success: function(data) {
-                        console.log("success:",data);
+                            if(data !== ""){ // if true (1)
+                             setTimeout(function(){// wait for 5 secs(2)
+                                  location.reload(); // then reload the page.(3)
+                             }, 5000); 
+                          }
                             
                             //display(data);
                         },
@@ -140,7 +142,7 @@ function addAssigment(){
                                }
 
                     });        
-    
+
     }
 
 var o = new Array();//{"items":[]}; // create an object with key items to hold array
@@ -212,7 +214,33 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
 
                     });
         
-    }    
+    } 
+    function delAssigment(){
+       var name = document.getElementById("nameeditassignment").value;
+       $.ajax({
+                        type: "POST",
+                        url: "saveAssign.htm?catid="+catid,
+                        data: JSON.stringify(data),
+                        datatype:"json",
+                        contentType: "application/json",  
+
+                        success: function(data) {
+                            if(data !== ""){ // if true (1)
+                             setTimeout(function(){// wait for 5 secs(2)
+                                  location.reload(); // then reload the page.(3)
+                             }, 5000); 
+                          }
+                            
+                            //display(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                   console.log(xhr.responseText);
+                                   console.log(thrownError);
+                               }
+
+                    });      
+    }
         </script>
          <style>
             .attempted{
@@ -318,8 +346,11 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
 
                 </div>
                 <div class="col-xs-4">
-                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" id="buttomModalObjective">
+                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" id="buttomModalAdd">
                         Add Assigment
+                    </button>
+                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#ModalEditAssigment" id="buttomModalEdit">
+                        Edit Assigment
                     </button>
                 </div>
             </div>
@@ -333,7 +364,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
                             <th>Student ID</th>
                             <th>Student</th>
                             <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
-                            <th class="text-center">
+                            <th class="text-center" id="${assig.id[0]}">
                                 <div class="col-xs-12">${assig.name}</div>
                                 <c:forEach var="crit" items="${criterias}">
                                     <div class="col-xs-6 celda">${crit.name}</div>
@@ -555,7 +586,7 @@ ${contador.index} - ${contadorG.index}
     </div> 
         </div>      
 
-            <!-- Modal -->
+            <!-- Modal Create Assigment-->
              <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -624,6 +655,87 @@ ${contador.index} - ${contadorG.index}
                                 </div>
                                 </fieldset>
                             </form:form>
+                        </div>
+<!--                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Edit Assigment-->
+             <div class="modal fade" id="ModalEditAssigment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Edit Assigment</h4>
+                        </div>
+                        <div class="modal-body" id="modal-CreateAssigment">
+                            
+                                <fieldset> 
+                                        <div class="col-xs-6 center-block form-group">
+                                            <label class="control-label">Category</label>
+                                             <input type="hidden" class="form-control" name="TXTidcategory" id="idcategory" value ="${category.id[0]}" readonly="">
+                                            <input type="text" class="form-control" name="TXTnamecategory" id="namecategory" value ="${category.name}" readonly="">
+                                        </div>
+                                        <div class="col-xs-6 center-block form-group">
+                                            <label class="control-label">Term</label>
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="CreateAssigTermSelected" readonly="">
+                                        </div>
+                                </fieldset>
+                                <fieldset> 
+                                        <div class="col-xs-4 center-block form-group">
+                                            <label class="control-label">Assigment</label>
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditassignment"  placeholder="Name">
+                                        </div>
+                                        <div class="col-xs-8 center-block form-group">
+                                            <label class="control-label">Description</label>
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptioneditassignment"  placeholder="Description">
+                                        </div>
+<!--                                        <div class="col-xs-1 center-block form-group">
+                                            <label class="control-label">Points</label>
+                                            <input type="number" class="form-control" name="TXTnamenewmethod" id="weighteditcategory"  placeholder="0">
+                                        </div>-->
+                                </fieldset>
+                                <fieldset> 
+                                     <div class="col-xs-6 center-block form-group">
+                                         <label class="control-label">Start Assigment</label>
+                                            <div class='input-group date' id='dateStart'>
+                                                <input type='text' name="TXTdateStart" id="TXTdateStart" class="form-control"/>
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 center-block form-group">
+                                            <label class="control-label">End Assigment</label>
+                                            <div class='input-group date' id='dateEnd'>       
+                                                <input type='text' name="TXTdateEnd" id="TXTdateEnd" class="form-control" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                </fieldset>
+                                <fieldset>
+                                    <div class="col-xs-6 center-block form-group">
+                                        <label class="control-label">EL assigment tiene los siguientes criterias heredados de la categoria</label>
+                                        <c:forEach var="crit" items="${criterias}">
+                                            <div class="col-xs-12">${crit.name}</div>
+                                        </c:forEach>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                <div class="col-xs-6 center-block form-group text-right">
+                                    <input type="button" name="AddCategory" value="edit" data-dismiss="modal" class="btn btn-success" id="AddAssigment" data-target=".bs-example-modal-lg" onclick="editAssigment()"/>
+                                </div>
+                                <div class="col-xs-6 center-block form-group text-right">
+                                    <button type="button" name="DelAssigment"  data-dismiss="modal" class="btn btn-danger" value="0" id="delAssigment" data-target=".bs-example-modal-lg" onclick="delAssigment()">
+                                        Delete
+                                    </button>
+                                </div>
+                                </fieldset>
+                            
                         </div>
 <!--                        <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
