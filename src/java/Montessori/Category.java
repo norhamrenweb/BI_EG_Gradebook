@@ -21,9 +21,31 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class Category {
     private String[] id;
      private int[] crit_ids;
+     private String term_ids;
     private String name;
     private double weight;
+       private ServletContext servlet;
+    private String description;
+    private String decimal;
  Connection cn;
+
+    public String getDecimal() {
+        return decimal;
+    }
+
+    public void setDecimal(String decimal) {
+        this.decimal = decimal;
+    }
+    
+ 
+    
+    public String getTerm_ids() {
+        return term_ids;
+    }
+
+    public void setTerm_ids(String term_ids) {
+        this.term_ids = term_ids;
+    }
 
     public int[] getCrit_ids() {
         return crit_ids;
@@ -48,8 +70,7 @@ public class Category {
     public void setDescription(String description) {
         this.description = description;
     }
-    private ServletContext servlet;
-    private String description;
+ 
       
 //      private ServletContext servlet;
     

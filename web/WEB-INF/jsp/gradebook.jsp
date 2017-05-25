@@ -79,6 +79,13 @@
      };
 
             });
+            
+            function reload(){
+             var  term = document.getElementById("term").value; 
+             var classid = document.getElementById("idclass").value;
+             var url ='gradebook/loadRecords.htm?term='+term+'&ClassSelected='+classid;
+              window.location.replace("<c:url value="/"/>"+url);
+            }
         </script>
         <style>
             .attempted{
@@ -135,16 +142,20 @@
             <div class="row">
                 <div class="col-xs-4">
                     <label>Term:</label>
-                    <select>
-                        <option>Q1</option>
-                        <option>Q2</option>
-                        <option>Q3</option>
+                    <select id="term" onchange="reload()">
+                        <c:forEach var="t" items="${terms}">
+                            <c:if test="${t.id == selectedterm}">
+                            <option selected="" value="${t.id}">${t.name}</option>
+                            </c:if>
+                            <option value="${t.id}">${t.name}</option>
+                            </c:forEach>
                     </select>
                     
                 </div>
                 <div class="col-xs-4"></div>
                 <div class="col-xs-4">
-                    <a href="<c:url value="/categories/loadCategories.htm?ClassSelected=1"/>">
+                    <a href="<c:url value="/categories/loadCategories.htm?ClassSelected=${classid}"/>">Edit Categories</a>
+                    <input type="hidden" class="form-control" name="TXTidcategory" id="idclass" value ="${classid}" readonly="">
                         <div class="center-block">
                             Categories
 <%--                            <input type="image" src="<c:url value="/recursos/img/iconos/Calendar-01.svg"/>" data-toggle="tooltip" data-placement="top" title="View calendar">--%>
@@ -164,8 +175,7 @@
                             <c:forEach var="p" items="${categories}" varStatus="contadorC">
                             <th id="${p.id[0]}"><span data-content="${p.weight}" data-toggle="popover" data-placement="left" data-original-title="${p.description}" data-trigger="hover">${p.name}</span></th>
                             </c:forEach>
-                            <th>Gradebook Grade</th>
-                            <th>Report Card Grade</th>
+                        
                         </tr>
                     </thead> 
                     <tbody>
@@ -182,8 +192,6 @@ ${contador.index} - ${contadorG.index}--%>
                                 </td>
                             </c:if>
                             </c:forEach>
-                            <td>50</td>
-                            <td>50</td>
                         </tr>
                         </c:forEach>
 <%--                        <tr>

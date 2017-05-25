@@ -26,7 +26,7 @@ var ajax;
                     
                     
                     var idCLass = $(this).attr('data-idclass');
-                    window.location.replace("<c:url value="/gradebook/loadRecords.htm?ClassSelected="/>"+idCLass);
+                    window.location.replace("<c:url value="/gradebook/loadRecords.htm?term=1&ClassSelected="/>"+idCLass);
                     
             });
         //VARIABLE CUANDO HEMOS CREADO UNA LESSONS CORRECTAMENTE

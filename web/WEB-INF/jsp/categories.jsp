@@ -446,24 +446,23 @@ $("#method").on('mouseover', 'option' , function(e) {
             }
             function saveaddMethod()
             {
-
-     //   var seleccion = document.getElementById("objective").value;
-        var name = document.getElementById("namenewmethod").value;
-        var description = document.getElementById("commentsnewmethod").value;
+        var name = document.getElementById("namenewcategory").value;
+        var description = document.getElementById("descriptionnewcat").value;
+         var weight = document.getElementById("weightnewcat").value;
+         var classid = document.getElementById("idclass").value;
         var myObj = {};
                 myObj["name"] = name;
                 myObj["description"] = description;
+                myObj["weight"] = weight;
                 var json = JSON.stringify(myObj);
             $.ajax({
                     type: 'POST',
-                        url: 'addMethod.htm?data='+json,
+                        url: 'newCategory.htm?classid='+classid,
                         data: json,
-                        dataType: 'text' ,           
-                     
+                        datatype:"json",
+                        contentType: "application/json", 
                         success: function(data) {                          
-                            var json = JSON.parse(data);                               
-                        $('#method').append('<option value = "'+json.id[0]+'" >' + json.name + '</option>');
-                        $('#formAddmethod').addClass("hidden");               
+                                     
                         },
                         error: function (xhr, ajaxOptions, thrownError) {
                                 console.log(xhr.status);
@@ -624,6 +623,7 @@ $("#method").on('mouseover', 'option' , function(e) {
 
         <div class="container">
             <h1 class="text-center">Categories</h1>
+              <input type="hidden" class="form-control" name="TXTidcategory" id="idclass" value ="${classid}" readonly="">
             <div class="col-xs-12" id="divTableGradebook">
                 <table id="tableCategories" class="display">
                     <thead>
@@ -632,9 +632,9 @@ $("#method").on('mouseover', 'option' , function(e) {
                             <th>Categories</th>
                             <th>Description</th>
                             <th>Weight</th>
-                            <th>T1</th>
-                            <th>T2</th>
-                            <th>T3</th>
+                             <c:forEach var="t" items="${terms}">
+                            <th value="${t.id}">${t.name}</th>
+                            </c:forEach>
                         </tr>
                     </thead> 
                     <tbody>
@@ -666,7 +666,7 @@ $("#method").on('mouseover', 'option' , function(e) {
                   </div>
                   <div id="createCategory" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
-                        <form:form id="formCreateCategories" method ="post" action="createsetting.htm?select=createsetting" >
+                        <form:form id="formCreateCategories" method ="post"  >
                             <fieldset id="formCreateCategory">
                                 <legend>Create category</legend>  
                                 <div class="col-xs-12">
@@ -676,29 +676,24 @@ $("#method").on('mouseover', 'option' , function(e) {
                                     </div>
                                     <div class="col-xs-7 center-block form-group">
                                         <label class="control-label">Description</label>
-                                        <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptionnewmethod"  placeholder="Description">
+                                        <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptionnewcat"  placeholder="Description">
                                     </div>
                                     <div class="col-xs-1 center-block form-group">
                                         <label class="control-label">Weight</label>
-                                        <input type="number" class="form-control" name="TXTnamenewmethod" id="weightnewmethod"  placeholder="0">
+                                        <input type="number" class="form-control" name="TXTnamenewmethod" id="weightnewcat"  placeholder="0">
                                     </div>
                                     <div class="col-xs-1 center-block form-group paddingLabel">
                                         <input type="button" name="AddCategory" value="save" class="btn btn-success" id="Addcategory" data-target=".bs-example-modal-lg" onclick="saveaddMethod()"/>
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-xs-offset-3">
+                                     <c:forEach var="t" items="${terms}">
                                     <div class="col-xs-4">
-                                        <label class="control-label">T1</label>
-                                        <input type="checkbox" name="t1" class="checkbox-inline checkbox-success">
+                                        <label class="control-label">${t.name}</label>
+                                        <input type="checkbox" value="$¨{t.id}" class="checkbox-inline checkbox-success">
                                     </div>
-                                    <div class="col-xs-4">
-                                        <label class="control-label">T2</label>
-                                        <input type="checkbox" name="t2" class="checkbox-success">
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <label class="control-label">T3</label>
-                                        <input type="checkbox" name="t3" class="checkbox-success">
-                                    </div>
+                                     </c:forEach>
+         
                                 </div>
                             </fieldset> 
                         </form:form>

@@ -12,6 +12,8 @@ package controladores;
 import Montessori.*;
 import atg.taglib.json.util.JSONObject;
 import com.google.gson.Gson;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,6 +27,8 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
@@ -38,7 +42,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class AssignmentsController {
      Connection cn;
-      
+         static Logger log = Logger.getLogger(AssignmentsController.class.getName());
+ 
 //      private ServletContext servlet;
     
     private Object getBean(String nombrebean, ServletContext servlet)
@@ -143,7 +148,9 @@ public class AssignmentsController {
                 }
                 studentcount = studentcount +1;
             } }catch (SQLException ex) {
-            System.out.println("Error: " + ex);
+            StringWriter errors = new StringWriter();
+            ex.printStackTrace(new PrintWriter(errors));
+            log.error(ex+errors.toString());
         }
         // assuming the criteria are the same for all assignements under the same category
          mv.addObject("students",students);
@@ -159,6 +166,8 @@ public class AssignmentsController {
    ModelAndView mv = new ModelAndView("assignments");
    String message = null;
    try {
+        HttpSession sesion = hsr.getSession();
+        User user = (User) sesion.getAttribute("user");
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
         this.cn = dataSource.getConnection();
@@ -181,11 +190,13 @@ public class AssignmentsController {
                    String grade = g.getSymbolGrade(typeid,g.getVal(),hsr.getServletContext());
                    consulta ="update student_grades set symbol ="+g.getVal()+",type_id= "+typeid+",grade = "+grade+" where student_id ="+g.getIdStudent()+" and criteria_id ="+g.getIdCrit()+" and assignmentid= "+g.getAssignmentid();
                st.executeUpdate(consulta);
+               ActivityLog.log(""+user.getId(), g.getIdStudent(), "update grade to be "+g.getVal()+"where criteria_id ="+g.getIdCrit()+" and assignmentid= "+g.getAssignmentid(), cn);
                    }
                   else
                   {
                       consulta ="delete from student_grades where student_id = "+g.getIdStudent()+" and criteria_id="+g.getIdCrit()+"and assignmentid= "+g.getAssignmentid();
                st.executeUpdate(consulta);
+               ActivityLog.log(""+user.getId(), g.getIdStudent(), "delete grade where criteria_id ="+g.getIdCrit()+" and assignmentid= "+g.getAssignmentid(), cn);
                   }
                    }
                else{
@@ -193,13 +204,16 @@ public class AssignmentsController {
                          String grade= g.getSymbolGrade(typeid,g.getVal(),hsr.getServletContext());
                     consulta ="insert into student_grades(symbol,type_id,grade,student_id,criteria_id,assignmentid) values('"+g.getVal()+"','"+typeid+"','"+grade+"','"+g.getIdStudent()+"','"+g.getIdCrit()+"','"+g.getAssignmentid()+"')";
                st.executeUpdate(consulta);
+                 ActivityLog.log(""+user.getId(), g.getIdStudent(), "add grade "+g.getVal()+" where criteria_id ="+g.getIdCrit()+" and assignmentid= "+g.getAssignmentid(), cn);
                  }
                   
                }
               }
               message = "Grades successfully updated";
                }catch (SQLException ex) {
-            System.out.println("Error: " + ex);
+           StringWriter errors = new StringWriter();
+            ex.printStackTrace(new PrintWriter(errors));
+            log.error(ex+errors.toString());
             message = "Something went wrong";
         }
    mv.addObject("message", message);
@@ -209,7 +223,8 @@ return mv;
 public ModelAndView saveAssign(@RequestBody Assignment assignment, HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
    String message = null;
     ModelAndView mv = new ModelAndView("redirect:/assignments/loadRecords.htm","message", message);
-   
+   HttpSession sesion = hsr.getSession();
+        User user = (User) sesion.getAttribute("user");
    try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
@@ -218,9 +233,12 @@ public ModelAndView saveAssign(@RequestBody Assignment assignment, HttpServletRe
           String[] catgid = hsr.getParameterValues("catid");
           String consulta = "insert into assignments(name,description,start,finish,catg_id) values('"+assignment.getName()+"','"+assignment.getDescription()+"','"+assignment.getStart()+"','"+assignment.getFinish()+"','"+catgid[0]+"')";
           st.executeUpdate(consulta);
+          ActivityLog.log(""+user.getId(), "add new assignment "+assignment.getName()+" under catg_id ="+catgid[0], cn);
            message = "Assignment successfully saved";
                }catch (SQLException ex) {
-            System.out.println("Error: " + ex);
+            StringWriter errors = new StringWriter();
+            ex.printStackTrace(new PrintWriter(errors));
+            log.error(ex+errors.toString());
             message = "Something went wrong";
         }
    mv.addObject("message", message);

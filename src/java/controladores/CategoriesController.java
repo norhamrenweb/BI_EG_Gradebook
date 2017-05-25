@@ -6,6 +6,8 @@
 package controladores;
 
 import Montessori.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,9 +21,12 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,7 +41,7 @@ public class CategoriesController {
     
     
       Connection cn;
-      
+      static Logger log = Logger.getLogger(AssignmentsController.class.getName());
 //      private ServletContext servlet;
     
     private Object getBean(String nombrebean, ServletContext servlet)
@@ -50,40 +55,22 @@ public class CategoriesController {
     public ModelAndView loadCategories(HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
         
         ModelAndView mv = new ModelAndView("categories");
-        List<Students> students = new ArrayList<>();
-        List<Category> categories = new ArrayList<>();
-        String[][] grades = null;
-        
+        String[] classid = hsr.getParameterValues("ClassSelected");
+        List<Category> categories = new ArrayList<>();  
+        List<Term> terms = new ArrayList<>();
          try {
-         DriverManagerDataSource dataSource;
-        dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
-        this.cn = dataSource.getConnection();
-     String classid = "474";//hsr.getParameter("classSelected");
+         DriverManagerDataSource dataSource;     
+    // String classid = "474";//hsr.getParameter("classSelected");
      String termid = "3";
      String courseid = "164"; // based on the course setting
 //     DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-//Date lessondate = format.parse(hsr.getParameter("seleccion5"));
-        
-         Statement st = this.cn.createStatement();
-
-//Query for retrieving students enrolled in the sleected class in the term selected(Enrolled# says the term)
-           String consulta = "SELECT r.StudentID , p.FirstName, p.LastName FROM Roster r , Person p where r.Enrolled"+termid+" = 1 and r.StudentID = p.PersonID and r.ClassID ="+classid;
-            ResultSet rs = st.executeQuery(consulta);
-        Classes lesson = new Classes();
-            while (rs.next())
-            {
-                Students s = new Students();
-                s.setId_students(rs.getInt("StudentID"));
-                s.setNombre_students(rs.getString("FirstName")+rs.getString("LastName"));
-                students.add(s);
-            }
-            cn.close();
+//Date lessondate = format.parse(hsr.getParameter("seleccion5"));   
         dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
         this.cn = dataSource.getConnection();
  // query for retrieving the catgeories names and their weights based on the class id
-            Statement st2 = this.cn.createStatement(); 
-            consulta ="select id,weight,name,description from category where t"+termid+" = true and id in(select cat_id from catg_class where class_id = "+classid+")";
-            ResultSet rs1 = st2.executeQuery(consulta);
+            Statement st = this.cn.createStatement(); 
+            String consulta ="select id,weight,name,description,term_ids from category where id in(select cat_id from catg_class where class_id = "+classid[0]+")";
+            ResultSet rs1 = st.executeQuery(consulta);
             while(rs1.next())
             {
                 Category cat = new Category();
@@ -93,75 +80,66 @@ public class CategoriesController {
                 id[0]=""+rs1.getInt("id");
                 cat.setId(id);
                 cat.setWeight(rs1.getDouble("weight"));
+                cat.setTerm_ids(rs1.getString("term_ids"));
                 categories.add(cat);   
             }
-            
- //query for retrieving the students grades for all assignments under the category for all criterias and adding them
- //first get the no. of criterias for the equivalent course
-//        consulta = "select count(id) from criteria_class where course_id ="+courseid+" group by course_id";
-//        ResultSet rs2 = st2.executeQuery(consulta);
-//        int critcount = 0;
-//        while(rs2.next())
-//        {
-//        critcount = rs2.getInt("count");
-//        }
-  // this the table grid
-   grades = new String[students.size()][categories.size()];
-    int categorycount = 0;
-    
-  // second getting the assignment ids under the catgeory      
-  for(Category c: categories){
-      String[] id = new String[1];
-      id = c.getId();
-        consulta = "select id from criteria_catg where catg_id ="+id[0];
-        ResultSet rs2 = st2.executeQuery(consulta);
-        int critcount = 0;
-       List<Integer> crit_ids = new ArrayList<>();
-        while(rs2.next())
-        {
-          crit_ids.add(rs2.getInt("id"));
-        critcount = critcount+1;
-        }
-     int studentcounter =0;
-//      c.setCrit_ids(crit_ids);
-     consulta = "select id from assignments where catg_id ="+id[0];
-        ResultSet rs3 = st2.executeQuery(consulta);
-        ArrayList<String> assignments = new ArrayList<>();
-        while(rs3.next())
-        {
-            assignments.add(""+rs3.getInt("id"));
-        }
-  
-        for(Students s: students)
-        {   
-           double total = 0;
-           for(int i =0;i<critcount;i++){
-               double crittotal = 0;
-         //   for(int z=0;z<assignments.size();z++){ // not sure if needed
-            
-        consulta = "select grade from student_grades where student_id ="+s.getId_students()+" and criteria_id = "+crit_ids.get(i);
-        ResultSet rs4 = st2.executeQuery(consulta);
-        while(rs4.next())
-        {
-        crittotal = crittotal + rs4.getDouble("grade");
+        // get the term names and ids
+        consulta = "select id,name from terms order by id";
+        ResultSet rs2 = st.executeQuery(consulta);
+         while(rs2.next())
+            {
+               Term t = new Term();
+               t.setId(""+rs2.getInt("id"));
+               t.setName(rs2.getString("name"));
+               terms.add(t);
             }
-            
-          total = total +(crittotal/assignments.size());  
-        }
-           grades[studentcounter][categorycount]=""+total;//based on the decimal setting the garde should be painted,notdone yet
-         studentcounter = studentcounter +1;  
-        }  
-        categorycount = categorycount +1;
-  }
          } catch (SQLException ex) {
-            System.out.println("Error: " + ex);
+            StringWriter errors = new StringWriter();
+            ex.printStackTrace(new PrintWriter(errors));
+            log.error(ex+errors.toString());
         }
-         mv.addObject("grades",grades);
-         mv.addObject("students", students);
+        
          mv.addObject("categories", categories);
+          mv.addObject("classid", classid[0]);
+          mv.addObject("terms",terms);
         return mv;
         
     }
-    
+   
+    @RequestMapping("/categories/newCategory.htm")
+    public ModelAndView newCategory(@RequestBody Category category,HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
+      String message = null;
+        ModelAndView mv = new ModelAndView("categories");
+        String[] classid = hsr.getParameterValues("classid");
+           HttpSession sesion = hsr.getSession();
+        User user = (User) sesion.getAttribute("user");
+         try {
+         DriverManagerDataSource dataSource;
+        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
+        this.cn = dataSource.getConnection();
+         Statement st = this.cn.createStatement();
+          String[] catgid = hsr.getParameterValues("classid");
+          String consulta = "insert into category(name,description,weight) values('"+category.getName()+"','"+category.getDescription()+"','"+category.getWeight()+"')";//pass,calc later after delivering to bedaya  
+          st.executeUpdate(consulta,Statement.RETURN_GENERATED_KEYS);
+        ResultSet rs = st.getGeneratedKeys();
+       String catg_id = null;
+        while(rs.next())
+        {
+        catg_id=""+rs.getInt(1);
+        }
+          st.executeUpdate(consulta);
+          consulta = "insert into catg_class(cat_id,class_id) values('"+catg_id+"','"+classid[0]+"')";
+          st.executeUpdate(consulta);
+          consulta = "insert into criteria_catg(name,catg_id,type_id) values('criteria','"+catg_id+"','')";//only for bedaya the category is created by default with 1 criteria with fixed name
+          st.executeUpdate(consulta);
+          ActivityLog.log(""+user.getId(), "add new category "+category.getName()+" under class_id ="+classid[0], cn);
+           message = "Category successfully saved";
+                  } catch (SQLException ex) {
+           StringWriter errors = new StringWriter();
+            ex.printStackTrace(new PrintWriter(errors));
+            log.error(ex+errors.toString());
+        }
+        return mv;
+    }
     
 }
