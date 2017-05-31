@@ -53,7 +53,7 @@ $("#method").on('mouseover', 'option' , function(e) {
                 $('#nameeditcategory').val(data[1]);
                 $('#descriptioneditcategory').val(data[2]);
                 $('#weighteditcategory').val(data[3]);
-                $('#weighteditcategory').val(data[4]);
+                $('#Term1editcategory').val(data[4]);
                 
             }
                //AÑADE LOS Criterias al select que se va enviar

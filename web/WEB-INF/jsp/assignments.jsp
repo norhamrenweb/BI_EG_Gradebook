@@ -77,6 +77,16 @@
                 
                 $( "th" ).click(function() {   
                     var idAssigment = $(this).attr('id');
+                    var name = $(this).find('#nameAssig').text();
+                    var description = $(this).find('#nameAssig').data('description');
+                    var stardate = $(this).find('#nameAssig').data('startdate');
+                    var finishdate = $(this).find('#nameAssig').data('finishdate');
+                    var term = $('#TermSelected option:selected').text();
+                    $('#EditAssigTermSelected').val(term);
+                    $('#nameEditAssignment').val(name);
+                    $('#descriptionEditAssignment').val(description);
+                    $('#TXTEditdateStart').val(stardate);
+                    $('#TXTEditdateEnd').val(finishdate);
                     $('#delAssigment').val(idAssigment);
                     $('#buttomModalEdit').click();
                     
@@ -216,6 +226,15 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
         
     } 
     function delAssigment(){
+      $('#divDelAssigment').addClass('hidden');
+      $('#divConfirmAssigment').removeClass('hidden');
+    }
+    function CancelDelAssigment(){
+      $('#divConfirmAssigment').addClass('hidden');
+      $('#divDelAssigment').removeClass('hidden');
+    }
+    CancelDelAssigment
+    function ConfirmDelAssigment(){
        var name = document.getElementById("nameeditassignment").value;
        $.ajax({
                         type: "POST",
@@ -349,7 +368,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
                     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" id="buttomModalAdd">
                         Add Assigment
                     </button>
-                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#ModalEditAssigment" id="buttomModalEdit">
+                    <button type="button" class="btn btn-primary btn-lg hidden" data-toggle="modal" data-target="#ModalEditAssigment" id="buttomModalEdit">
                         Edit Assigment
                     </button>
                 </div>
@@ -365,13 +384,13 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
                             <th>Student</th>
                             <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
                             <th class="text-center" id="${assig.id[0]}">
-                                <div class="col-xs-12">${assig.name}</div>
+                                <div class="col-xs-12" id="nameAssig" data-description="${assig.description}" data-startdate="${assig.start}" data-finishdate="${assig.finish}">${assig.name}</div>
                                 <c:forEach var="crit" items="${criterias}">
                                     <div class="col-xs-6 celda">${crit.name}</div>
                                 </c:forEach>
                             </th>
                             </c:forEach>
-                            <th></th>
+<!--                            <th></th>-->
                         </tr>
                     </thead> 
                     <tbody>
@@ -388,14 +407,14 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
                                     </c:forEach>
                                 </td>    
                             </c:forEach>
-                                <td>
+<%--                                <td>
                                     <select class="selectFaces" name="payments" style="width:250px;">
                                         <option value="" data-description="">Select grade</option>
                                         <option value="Happy" data-image="<c:url value="/recursos/img/iconos/faceHappy.svg" />" data-description="">Happy</option>
                                         <option value="Normal" data-image="<c:url value="/recursos/img/iconos/faceNormal.svg" />" data-description="" selected="true">Normal</option>
                                         <option value="Unhappy" data-image="<c:url value="/recursos/img/iconos/faceUnhappy.svg" />" data-description="">Unhappy</option>
                                     </select>  
-                                </td>
+                                </td>--%>
                         </tr>
                         </c:forEach>  
                         <%--<tr>
@@ -610,11 +629,11 @@ ${contador.index} - ${contadorG.index}
                                 <fieldset> 
                                         <div class="col-xs-4 center-block form-group">
                                             <label class="control-label">Assigment</label>
-                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditassignment"  placeholder="Name">
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameNewAssignment"  placeholder="Name">
                                         </div>
                                         <div class="col-xs-8 center-block form-group">
                                             <label class="control-label">Description</label>
-                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptioneditassignment"  placeholder="Description">
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptionNewAssignment"  placeholder="Description">
                                         </div>
 <!--                                        <div class="col-xs-1 center-block form-group">
                                             <label class="control-label">Points</label>
@@ -680,17 +699,17 @@ ${contador.index} - ${contadorG.index}
                                         </div>
                                         <div class="col-xs-6 center-block form-group">
                                             <label class="control-label">Term</label>
-                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="CreateAssigTermSelected" readonly="">
+                                            <input type="text" class="form-control" name="EditAssigTermSelected" id="EditAssigTermSelected" readonly="">
                                         </div>
                                 </fieldset>
                                 <fieldset> 
                                         <div class="col-xs-4 center-block form-group">
                                             <label class="control-label">Assigment</label>
-                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameeditassignment"  placeholder="Name">
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="nameEditAssignment"  placeholder="Name">
                                         </div>
                                         <div class="col-xs-8 center-block form-group">
                                             <label class="control-label">Description</label>
-                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptioneditassignment"  placeholder="Description">
+                                            <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptionEditAssignment"  placeholder="Description">
                                         </div>
 <!--                                        <div class="col-xs-1 center-block form-group">
                                             <label class="control-label">Points</label>
@@ -701,7 +720,7 @@ ${contador.index} - ${contadorG.index}
                                      <div class="col-xs-6 center-block form-group">
                                          <label class="control-label">Start Assigment</label>
                                             <div class='input-group date' id='dateStart'>
-                                                <input type='text' name="TXTdateStart" id="TXTdateStart" class="form-control"/>
+                                                <input type='text' name="TXTdateStart" id="TXTEditdateStart" class="form-control"/>
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
@@ -710,7 +729,7 @@ ${contador.index} - ${contadorG.index}
                                         <div class="col-xs-6 center-block form-group">
                                             <label class="control-label">End Assigment</label>
                                             <div class='input-group date' id='dateEnd'>       
-                                                <input type='text' name="TXTdateEnd" id="TXTdateEnd" class="form-control" />
+                                                <input type='text' name="TXTdateEnd" id="TXTEditdateEnd" class="form-control" />
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
@@ -718,21 +737,33 @@ ${contador.index} - ${contadorG.index}
                                         </div>
                                 </fieldset>
                                 <fieldset>
-                                    <div class="col-xs-6 center-block form-group">
+<%--                                    <div class="col-xs-6 center-block form-group">
                                         <label class="control-label">EL assigment tiene los siguientes criterias heredados de la categoria</label>
                                         <c:forEach var="crit" items="${criterias}">
                                             <div class="col-xs-12">${crit.name}</div>
                                         </c:forEach>
-                                    </div>
+                                    </div>--%>
                                 </fieldset>
                                 <fieldset>
                                 <div class="col-xs-6 center-block form-group text-right">
                                     <input type="button" name="AddCategory" value="edit" data-dismiss="modal" class="btn btn-success" id="AddAssigment" data-target=".bs-example-modal-lg" onclick="editAssigment()"/>
                                 </div>
-                                <div class="col-xs-6 center-block form-group text-right">
-                                    <button type="button" name="DelAssigment"  data-dismiss="modal" class="btn btn-danger" value="0" id="delAssigment" data-target=".bs-example-modal-lg" onclick="delAssigment()">
+                                <div class="col-xs-6 center-block form-group text-right" id="divDelAssigment">
+                                    <button type="button" name="DelAssigment" class="btn btn-danger" value="0" id="delAssigment" data-target=".bs-example-modal-lg" onclick="delAssigment()">
                                         Delete
                                     </button>
+                                </div>
+                                    <div class="col-xs-6 center-block form-group text-right hidden" id="divConfirmAssigment">
+                                    <div class="col-xs-6 center-block form-group text-right">
+                                        <button type="button" name="ConfirmDelAssigment" class="btn btn-danger" value="0" id="ConfirmDelAssigment" onclick="ConfirmDelAssigment()">
+                                        Confirm
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 center-block form-group text-right">
+                                        <button type="button" name="CancelDelAssigment" class="btn btn-success" value="0" id="CancelDelAssigment" onclick="CancelDelAssigment()">
+                                        Cancel
+                                        </button>
+                                    </div>
                                 </div>
                                 </fieldset>
                             
