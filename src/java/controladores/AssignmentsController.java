@@ -96,7 +96,7 @@ public class AssignmentsController {
         this.cn = dataSource.getConnection();
  // query for retrieving the catgeories names and their weights based on the class id
             Statement st2 = this.cn.createStatement(); 
-            consulta ="select id,name,description from assignments where catg_id = "+catgid[0];
+            consulta ="select * from assignments where catg_id = "+catgid[0];
             ResultSet rs1 = st2.executeQuery(consulta);
             while(rs1.next())
             {
@@ -105,6 +105,8 @@ public class AssignmentsController {
                 a.setName(rs1.getString("name"));
                 String[] id = new String[1];
                 id[0]=""+rs1.getInt("id");
+                a.setStart(rs1.getString("start"));
+                a.setFinish(rs1.getString("finish"));
                 a.setId(id);
                
                 assignments.add(a);   
@@ -235,6 +237,57 @@ public ModelAndView saveAssign(@RequestBody Assignment assignment, HttpServletRe
           st.executeUpdate(consulta);
           ActivityLog.log(""+user.getId(), "add new assignment "+assignment.getName()+" under catg_id ="+catgid[0], cn);
            message = "Assignment successfully saved";
+               }catch (SQLException ex) {
+            StringWriter errors = new StringWriter();
+            ex.printStackTrace(new PrintWriter(errors));
+            log.error(ex+errors.toString());
+            message = "Something went wrong";
+        }
+   mv.addObject("message", message);
+return mv;   
+}
+@RequestMapping("/assignments/editAssign.htm")
+public ModelAndView editAssign(@RequestBody Assignment assignment, HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
+   String message = null;
+    ModelAndView mv = new ModelAndView("redirect:/assignments/loadRecords.htm","message", message);
+   HttpSession sesion = hsr.getSession();
+        User user = (User) sesion.getAttribute("user");
+   try {
+         DriverManagerDataSource dataSource;
+        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
+        this.cn = dataSource.getConnection();
+          Statement st = this.cn.createStatement();
+          String[] catgid = hsr.getParameterValues("catid");
+          String consulta = "update assignments set name = '"+assignment.getName()+"', description = '"+assignment.getDescription()+"',start = '"+assignment.getStart()+"',finish = '"+assignment.getFinish()+"' where id = '"+assignment.getId()+"'";
+          st.executeUpdate(consulta);
+          ActivityLog.log(""+user.getId(), "update assignment "+assignment.getName()+" under catg_id ="+catgid[0], cn);
+           message = "Assignment successfully updated";
+               }catch (SQLException ex) {
+            StringWriter errors = new StringWriter();
+            ex.printStackTrace(new PrintWriter(errors));
+            log.error(ex+errors.toString());
+            message = "Something went wrong";
+        }
+   mv.addObject("message", message);
+return mv;   
+}
+@RequestMapping("/assignments/delAssign.htm")
+// ask sergio how to do the delete
+public ModelAndView delAssign(@RequestBody Assignment assignment, HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
+   String message = null;
+    ModelAndView mv = new ModelAndView("redirect:/assignments/loadRecords.htm","message", message);
+   HttpSession sesion = hsr.getSession();
+        User user = (User) sesion.getAttribute("user");
+   try {
+         DriverManagerDataSource dataSource;
+        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
+        this.cn = dataSource.getConnection();
+          Statement st = this.cn.createStatement();
+          String[] catgid = hsr.getParameterValues("catid");
+          String consulta = "delete assignments where id = '"+assignment.getId()+"'";
+          st.executeUpdate(consulta);
+          ActivityLog.log(""+user.getId(), "delete assignment "+assignment.getName()+" under catg_id ="+catgid[0], cn);
+           message = "Assignment successfully delete";
                }catch (SQLException ex) {
             StringWriter errors = new StringWriter();
             ex.printStackTrace(new PrintWriter(errors));
