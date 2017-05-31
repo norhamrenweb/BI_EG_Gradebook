@@ -359,7 +359,7 @@ public class CreateLessonControlador {
       newlesson.setLevel(level);
       newlesson.setCourse(subject);
       newlesson.setObjective(objective);
-       newlesson.setContentid(contentids);
+//       newlesson.setContentid(contentids);
        
 //       String test = hsr.getParameter("TXTloadtemplates");
 //       if(test != null)

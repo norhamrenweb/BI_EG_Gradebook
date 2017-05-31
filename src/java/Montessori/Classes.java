@@ -23,7 +23,7 @@ public class Classes {
     private Level level;
     private Category objective;
     private Course course;
-    private String[] contentid;
+   private String[] contentid;
     private int teacherid;
     private Criteria criteria;
 
@@ -55,7 +55,7 @@ public class Classes {
     private String date;
     private List<Students> students;
 
-    public String[] getContentid() {
+   public String[] getContentid() {
         return contentid;
     }
 
@@ -69,7 +69,7 @@ public class Classes {
 
     public void setContentid(String[] equipmentid) {
         this.contentid = equipmentid;
-    }
+   }
 
     public Level getLevel() {
         return level;
