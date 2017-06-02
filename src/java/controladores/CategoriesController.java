@@ -83,6 +83,22 @@ public class CategoriesController {
                 cat.setTerm_ids(rs1.getString("term_ids"));
                 categories.add(cat);   
             }
+            //get the gradingtypes and values
+            for(Category c:categories)
+            {
+                String[] id = new String[1];
+                id = c.getId();
+                String query = "select name,values from grading_types where id in (select type_id from criteria_catg where catg_id ='"+id[0]+"') ";//must add the criteria as well later, incase a category has more than one criteria
+                  ResultSet rs2 = st.executeQuery(query);
+                  
+            while(rs2.next())
+            {
+                Gradetype gr = new Gradetype();
+                gr.setName(rs2.getString("name"));
+                gr.setValues(rs2.getString("values"));
+                c.setGradetype(gr);
+            }
+            }
         // get the term names and ids
         consulta = "select id,name from terms order by id";
         ResultSet rs2 = st.executeQuery(consulta);
@@ -119,7 +135,7 @@ public class CategoriesController {
         this.cn = dataSource.getConnection();
          Statement st = this.cn.createStatement();
           String[] catgid = hsr.getParameterValues("classid");
-          String consulta = "insert into category(name,description,weight) values('"+category.getName()+"','"+category.getDescription()+"','"+category.getWeight()+"')";//pass,calc later after delivering to bedaya  
+          String consulta = "insert into category(name,description,weight,term_ids) values('"+category.getName()+"','"+category.getDescription()+"','"+category.getWeight()+"','";//pass,calc later after delivering to bedaya  
           st.executeUpdate(consulta,Statement.RETURN_GENERATED_KEYS);
         ResultSet rs = st.getGeneratedKeys();
        String catg_id = null;
@@ -130,7 +146,17 @@ public class CategoriesController {
       
           consulta = "insert into catg_class(cat_id,class_id) values('"+catg_id+"','"+classid[0]+"')";
           st.executeUpdate(consulta);
-          consulta = "insert into criteria_catg(name,catg_id,type_id) values('criteria','"+catg_id+"','')";//only for bedaya the category is created by default with 1 criteria with fixed name
+          Gradetype gr = category.getGradetype();
+          consulta = "insert into grading_types(name,values) values('"+gr.getName()+"','"+gr.getValues()+"')";
+           st.executeUpdate(consulta,Statement.RETURN_GENERATED_KEYS);
+           ResultSet rs1 = st.getGeneratedKeys();
+            String type_id = null;
+        while(rs1.next())
+        {
+        type_id=""+rs1.getInt(1);
+        }
+      
+          consulta = "insert into criteria_catg(name,catg_id,type_id) values('criteria','"+catg_id+"','"+type_id+"')";//only for bedaya the category is created by default with 1 criteria with fixed name
           st.executeUpdate(consulta);
           ActivityLog.log(""+user.getId(), "add new category "+category.getName()+" under class_id ="+classid[0], cn);
            message = "Category successfully saved";
@@ -154,15 +180,50 @@ public class CategoriesController {
         this.cn = dataSource.getConnection();
          Statement st = this.cn.createStatement();
           String[] catgid = hsr.getParameterValues("classid");
-          String consulta = "update category set name = '"+category.getName()+"', description ='"+category.getDescription()+"',weight='"+category.getWeight()+"', decimal ='"+category.getDecimal()+"', term_ids = '"+category.getTerm_ids()+"' where id = '"+category.getId();//pass,calc later after delivering to bedaya  
+          String consulta = "update category set name = '"+category.getName()+"', description ='"+category.getDescription()+"',weight='"+category.getWeight()+"', decimal ='"+category.getDecimal()+"', term_ids = '"+category.getTerm_ids()+"' where id = '"+category.getId();//pass,calc later after delivering to bedaya 
+          st.executeUpdate(consulta);
           //later must put an option for editing the criterias under category
           ActivityLog.log(""+user.getId(), "update category "+category.getName()+" under class_id ="+classid[0], cn);
-           message = "Category successfully saved";
+          Gradetype gr = category.getGradetype();
+          // here we need later to put the numeric equivalent of the symbols
+          consulta = "update grading_types set name= '"+gr.getName()+"',values = '"+gr.getValues()+"' where id in(select type_id from criteria_catg where catg_id ='"+catgid[0]+"')"; 
+          st.executeUpdate(consulta);
+          message = "Category successfully saved";
                   } catch (SQLException ex) {
            StringWriter errors = new StringWriter();
             ex.printStackTrace(new PrintWriter(errors));
             log.error(ex+errors.toString());
         }
+        return mv;
+    }
+    
+    @RequestMapping("/categories/delCategory.htm")
+    public ModelAndView delCategory(@RequestBody Category category,HttpServletRequest hsr, HttpServletResponse hsr1) throws Exception {
+      String message = null;
+        ModelAndView mv = new ModelAndView("categories");
+        String[] classid = hsr.getParameterValues("classid");
+           HttpSession sesion = hsr.getSession();
+        User user = (User) sesion.getAttribute("user");
+         try {
+         DriverManagerDataSource dataSource;
+        dataSource = (DriverManagerDataSource)this.getBean("dataSource",hsr.getServletContext());
+        this.cn = dataSource.getConnection();
+         Statement st = this.cn.createStatement();
+          String[] catgid = hsr.getParameterValues("classid");
+          String consulta = "delete from category where id = '"+category.getId(); 
+          st.executeUpdate(consulta);
+          //later must put an option for editing the criterias under category
+          ActivityLog.log(""+user.getId(), "delete category "+category.getName()+" under class_id ="+classid[0], cn);
+          
+          message = "Category successfully deleted";
+          
+                  } catch (SQLException ex) {
+           StringWriter errors = new StringWriter();
+            ex.printStackTrace(new PrintWriter(errors));
+            log.error(ex+errors.toString());
+            message = "Something went wrong";
+        }
+         mv.addObject("message",message);
         return mv;
     }
 }

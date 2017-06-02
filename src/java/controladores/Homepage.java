@@ -37,6 +37,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @RequestMapping("/")
@@ -59,18 +60,21 @@ public ModelAndView login(HttpServletRequest hsr, HttpServletResponse hsr1) thro
         User user = new User();
         int scgrpid = 0;
         boolean result = false;
+        ArrayList<Students> children ;
          LoginVerification login = new LoginVerification();
          if("QuickBook".equals(hsr.getParameter("txtusuario"))){
             ModelAndView mv = new ModelAndView("redirect:/suhomepage.htm?opcion=loadconfig"); 
             return mv;
          }else{
          user = login.consultUserDB(hsr.getParameter("txtusuario"), hsr.getParameter("txtpassword"));
+         // if the username or password incorrect
          if(user.getId()==0){
          ModelAndView mv = new ModelAndView("userform");
         String message = "Username or password incorrect";
         mv.addObject("message", message);
         return mv;
          }
+         //if the user is not part of the group
          else{
          scgrpid=login.getSecurityGroupID("MontesoriTest");
          result = login.fromGroup(scgrpid, user.getId());
@@ -78,10 +82,23 @@ public ModelAndView login(HttpServletRequest hsr, HttpServletResponse hsr1) thro
         ModelAndView mv = new ModelAndView("redirect:/homepage/loadLessons.htm");
      String  message = "welcome user";
        session.setAttribute("user", user);
+       
         mv.addObject("message", message);
         return mv;
         }
-      
+         
+         else{
+         children=login.isparent( user.getId());    
+         if(!children.isEmpty()){
+            ModelAndView mv = new ModelAndView("redirect:/parentpage/start.htm");
+//            mv.setViewName("redirect:/parentpage/start.htm");
+//    redir.addFlashAttribute("children",children);
+     String  message = "welcome user";
+       session.setAttribute("user", user);
+        mv.addObject("message", message);
+       // mv.addObject("children",children);
+        return mv; 
+         }
          else{
            ModelAndView mv = new ModelAndView("userform");
         String message = "Username or Password incorrect";
@@ -125,7 +142,7 @@ public ModelAndView login(HttpServletRequest hsr, HttpServletResponse hsr1) thro
        
         
 
-}
+         }}
 
 
 

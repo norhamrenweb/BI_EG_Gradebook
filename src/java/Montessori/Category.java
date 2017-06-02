@@ -27,7 +27,16 @@ public class Category {
        private ServletContext servlet;
     private String description;
     private String decimal;
+    private Gradetype gradetype;
  Connection cn;
+
+    public Gradetype getGradetype() {
+        return gradetype;
+    }
+
+    public void setGradetype(Gradetype gradetype) {
+        this.gradetype = gradetype;
+    }
 
     public String getDecimal() {
         return decimal;
