@@ -123,7 +123,65 @@ $(function () {
           
 
             var ajax;
+             function createCategory()
+            {
+            var range;
+            var id = $("#idclass").val();
+            var name = $("#namenewcategory").val();
+            var description = $("#descriptionnewcat").val();
+            var TypeGrading = $("#selectType option:selected").val();
+            if(TypeGrading === '1'){
+                var letraMin = $("#TextMinLetter").val();
+                var letraMax = $("#TextMaxLetter").val();
+                
+                    var letters = [], i = letraMin.charCodeAt(0), j = letraMax.charCodeAt(0);
+                    for (; i <= j; ++i) {
+                        letters.push(String.fromCharCode(i));
+                    }   
+                    range = letters.toString();
+            }else{
+                var numberMin = $("#TextMinNumber").val();
+                var numberMax = $("#TextMaxNumber").val();
+                
+                    var numbers = [], i = numberMin.charCodeAt(0), j = numberMax.charCodeAt(0);
+                    for (; i <= j; ++i) {
+                        numbers.push(String.fromCharCode(i));
+                    }   
+                    range = numbers.toString();
+            };
+            var term_ids = '1,2,3';
+            var grades = {name: TypeGrading,values: range};
             
+            var data = {
+                       name :  name,
+                       description : description,
+                       gradetype : grades,
+                       term_ids: term_ids
+                     };
+            $.ajax({
+                        type: "POST",
+                        url: "newCategory.htm?classid="+id,
+                        data: JSON.stringify(data),
+                        datatype:"json",
+                        contentType: "application/json",  
+
+                        success: function(data) {
+//                            if(data !== ""){ // if true (1)
+//                             setTimeout(function(){// wait for 5 secs(2)
+//                                  location.reload(); // then reload the page.(3)
+//                             }, 5000); 
+//                          }
+                            
+                            //display(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                   console.log(xhr.responseText);
+                                   console.log(thrownError);
+                               }
+
+                    });  
+            }
    
     
          
@@ -214,11 +272,11 @@ $(function () {
                                 <div class="col-xs-12">
                                     <div class="col-xs-3 center-block form-group">
                                         <label class="control-label">Name new category</label>
-                                        <input type="text" class="form-control" name="TXTnamenewmethod" id="namenewcategory"  placeholder="Name">
+                                        <input type="text" class="form-control" name="TXTnamenewCategory" id="namenewcategory"  placeholder="Name">
                                     </div>
                                     <div class="col-xs-7 center-block form-group">
                                         <label class="control-label">Description</label>
-                                        <input type="text" class="form-control" name="TXTnamenewmethod" id="descriptionnewcat"  placeholder="Description">
+                                        <input type="text" class="form-control" name="TXTdescriptionnewCategory" id="descriptionnewcat"  placeholder="Description">
                                     </div>
 <!--                                    <div class="col-xs-1 center-block form-group">
                                         <label class="control-label">Weight</label>
