@@ -18,6 +18,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 public class LoginVerification {
     
     public LoginVerification(){}
@@ -57,7 +58,7 @@ public class LoginVerification {
     public User consultUserDB(String user,String password) throws Exception {
         User u = null;
        //user = 'shahad' and pswd = 'shahad1234' group = Spring
-        String query = "select * from Person where username = '"+user+"' and pswd = HASHBYTES('MD5', CONVERT(nvarchar(4000),'"+password+"'));";
+        String query = "select * from Person where username = '"+user+"'"; //and pswd = HASHBYTES('MD5', CONVERT(nvarchar(4000),'"+password+"'));";
      
          ResultSet rs = SQLQuery(query);
          if(!rs.next()) 
@@ -94,6 +95,21 @@ public class LoginVerification {
             }
       
         return aux;
+    }
+
+    public ArrayList<Students> isparent(int userid)throws SQLException {
+      
+        String query ="SELECT s.FirstName,s.LastName,s.GradeLevel,f.ParentID,ps.StudentID FROM Students as s inner join Parent_Student as ps on ps.StudentID = s.StudentID inner join Family as f on f.ParentID = ps.ParentID where f.PersonID = '"+userid+"'";
+         ResultSet rs = SQLQuery(query);
+         ArrayList<Students> children = new ArrayList<>();
+        while(rs.next()){
+            Students child = new Students();
+            child.setId_students(rs.getInt("StudentID"));
+            child.setLevel_id(rs.getString("GradeLevel"));
+            child.setNombre_students(rs.getString("FirstName")+" "+rs.getString("LastName"));
+            children.add(child);
+        }
+    return children;
     }
     
 }

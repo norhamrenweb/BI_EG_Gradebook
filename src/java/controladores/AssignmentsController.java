@@ -61,7 +61,7 @@ public class AssignmentsController {
         List<Assignment> assignments = new ArrayList<>();
         List<Criteria> criterias = new ArrayList<>();
         String[][][] grades = null;
-        
+         int type_id = 0;
          try {
          DriverManagerDataSource dataSource;
         dataSource = (DriverManagerDataSource)this.getBean("dataSourceAH",hsr.getServletContext());
@@ -111,17 +111,18 @@ public class AssignmentsController {
                
                 assignments.add(a);   
             }
-            consulta ="select id,name from criteria_catg where catg_id ="+catgid[0];
+            consulta ="select id,name,type_id from criteria_catg where catg_id ="+catgid[0];
             ResultSet rs2 = st2.executeQuery(consulta);
+            //this must change later because every criteria will have a type_id, but currently the catgeory has one type id
+           
             while(rs2.next())
             {
                 Criteria c = new Criteria();
-              
+              type_id = rs2.getInt("type_id");
                 c.setName(rs2.getString("name"));
                 String[] id = new String[1];
                 id[0]=""+rs2.getInt("id");
                c.setId(id);
-               
                 criterias.add(c);   
             }
             int studentcount = 0;
@@ -154,11 +155,15 @@ public class AssignmentsController {
             ex.printStackTrace(new PrintWriter(errors));
             log.error(ex+errors.toString());
         }
+         // get the type values
+         Gradetype gr = new Gradetype();
+         List<String> gradevalues =gr.fetchValues(type_id,cn);
         // assuming the criteria are the same for all assignements under the same category
          mv.addObject("students",students);
          mv.addObject("criterias", criterias);
           mv.addObject("assignments", assignments);
            mv.addObject("grades", grades);
+           mv.addObject("gradevalues",gradevalues);
          
         return mv;
         
