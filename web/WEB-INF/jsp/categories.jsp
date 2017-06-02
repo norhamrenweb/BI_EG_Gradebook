@@ -130,6 +130,12 @@ $(function () {
             var name = $("#namenewcategory").val();
             var description = $("#descriptionnewcat").val();
             var TypeGrading = $("#selectType option:selected").val();
+            var term_selected = '';
+            $("input:checkbox[name=termCat]:checked").each(function(){
+            if (this.checked) {
+                term_selected += $(this).val()+',';
+            }
+            });
             if(TypeGrading === '1'){
                 var letraMin = $("#TextMinLetter").val();
                 var letraMax = $("#TextMaxLetter").val();
@@ -149,7 +155,7 @@ $(function () {
                     }   
                     range = numbers.toString();
             };
-            var term_ids = '1,2,3';
+            var term_ids = term_selected.toString().slice(0,-1);
             var grades = {name: TypeGrading,values: range};
             
             var data = {
@@ -160,17 +166,17 @@ $(function () {
                      };
             $.ajax({
                         type: "POST",
-                        url: "newCategory.htm?classid="+id,
+                       url: "newCategory.htm?classid="+id,
                         data: JSON.stringify(data),
                         datatype:"json",
                         contentType: "application/json",  
 
                         success: function(data) {
-//                            if(data !== ""){ // if true (1)
-//                             setTimeout(function(){// wait for 5 secs(2)
-//                                  location.reload(); // then reload the page.(3)
-//                             }, 5000); 
-//                          }
+                            if(data !== ""){ // if true (1)
+                             setTimeout(function(){// wait for 5 secs(2)
+                                  location.reload(); // then reload the page.(3)
+                             }, 5000); 
+                          }
                             
                             //display(data);
                         },
@@ -333,7 +339,7 @@ $(function () {
                                     <c:forEach var="t" items="${terms}">
                                     <div class="col-xs-4">
                                         <label class="control-label">${t.name}</label>
-                                        <input type="checkbox" value="${t.id}" class="checkbox-inline checkbox-success">
+                                        <input type="checkbox" name="termCat" value="${t.id}" class="checkbox-inline checkbox-success">
                                     </div>
                                      </c:forEach>
                                 </div>
