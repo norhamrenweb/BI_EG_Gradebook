@@ -44,6 +44,57 @@ $("#method").on('mouseover', 'option' , function(e) {
     }
 });
 
+
+});
+
+$(function () {
+    $("#TextMinLetter").blur(function () {
+    if ($(this).is(":invalid")) {
+      $(this).popover({
+                animation: 'true',
+                title: $(this).attr("data-title"),
+                placement: 'top'
+          }).popover('show');
+    }else if($(this).is(":valid")){
+        $(this).popover('destroy');
+    }
+  });
+  $("#TextMaxLetter").blur(function () {
+    if ($(this).is(":invalid")) {
+      $(this).popover({
+                animation: 'true',
+                title: $(this).attr("data-title"),
+                placement: 'top'
+          }).popover('show');
+    }else if($(this).is(":valid")){
+        $(this).popover('destroy');
+    }
+
+  });
+  $("#TextMinNumber").blur(function () {
+    if ($(this).is(":invalid")) {
+      $(this).popover({
+                animation: 'true',
+                title: $(this).attr("data-title"),
+                placement: 'top'
+          }).popover('show');
+    }else if($(this).is(":valid")){
+        $(this).popover('destroy');
+    }
+
+  });
+  $("#TextMaxNumber").blur(function () {
+    if ($(this).is(":invalid")) {
+      $(this).popover({
+                animation: 'true',
+                title: $(this).attr("data-title"),
+                placement: 'top'
+          }).popover('show');
+    }else if($(this).is(":valid")){
+        $(this).popover('destroy');
+    }
+
+  });
 });
             function editCategory(id)
             {
@@ -177,17 +228,60 @@ $("#method").on('mouseover', 'option' , function(e) {
                                         <input type="button" name="AddCategory" value="save" class="btn btn-success" id="Addcategory" onclick="createCategory()"/>
                                     </div>
                                 </div>
-                                <div class="col-xs-6 col-xs-offset-3">
-                                     <c:forEach var="t" items="${terms}">
+                                <div class="col-xs-6 form-inline">
+                                    <script>
+                                    function selecType()
+                                        {
+                                            TypeSelected = $('#selectType').val();
+                                            if(TypeSelected === '1'){
+                                                $('#typeNumber').addClass('hidden');
+                                                $('#typeLetter').removeClass('hidden');
+                                            }else if(TypeSelected === '2'){
+                                                $('#typeLetter').addClass('hidden');
+                                                $('#typeNumber').removeClass('hidden');
+                                            }else{
+                                                $('#typeLetter').addClass('hidden');
+                                                $('#typeNumber').addClass('hidden');
+                                            }
+                                            
+                                        }
+                                      
+                                    </script>
+                                    <div class="col-xs-6">
+                                    <label>Type</label>
+                                    <select class="form-control" id="selectType" onchange="selecType()">
+                                        <option value="0">Select grading type</option>
+                                        <option value="1">Letter</option>
+                                        <option value="2">Number</option>
+                                    </select>
+                                    </div>
+                                    
+                                    <div id="typeLetter" class="col-xs-6 hidden form-group form-inline">
+                                        <label>Min.</label>
+                                        <input type="text" id="TextMinLetter" data-title="You should enter letters caps or small from A - Z" class="form-control" placeholder="A" pattern="[a-zA-Z]{1,}" maxlength="1" size="1">
+                                        <label>Max.</label>
+                                        <input type="text" id="TextMaxLetter" data-title="You should enter letters caps or small from A - Z" class="form-control" placeholder="Z" pattern="[a-zA-Z]{1,}" maxlength="1" size="1">
+                                    </div>
+                                    
+                                    <div id="typeNumber" class="col-xs-6 hidden form-group form-inline">
+                                        <label>Min.</label>
+                                        <input type="text" id="TextMinNumber" data-title="You should enter numbers from 0 - 99" class="form-control" placeholder="0" maxlength="2" pattern="[0-9]{1,}" size="2">
+                                        <label>Max.</label>
+                                        <input type="text" id="TextMaxNumber" data-title="You should enter numbers from 1 - 100" class="form-control" placeholder="100" maxlength="3" pattern="[0-9]{1,}" size="2">
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-xs-6">
+                                    <c:forEach var="t" items="${terms}">
                                     <div class="col-xs-4">
                                         <label class="control-label">${t.name}</label>
                                         <input type="checkbox" value="${t.id}" class="checkbox-inline checkbox-success">
                                     </div>
                                      </c:forEach>
-         
                                 </div>
                             </fieldset>
-                            <fieldset >
+<!--                            SE COMENTA PORQUE EL BEDAYIA NO NECESITA ESTO-->
+<!--                            <fieldset >
                                 <legend>Add Criteria</legend>  
                                 <div class="col-xs-12">
                                     <div class="col-xs-6">
@@ -211,7 +305,7 @@ $("#method").on('mouseover', 'option' , function(e) {
                                         </div>
                                     </div>
                                 </div>
-                            </fieldset> 
+                            </fieldset> -->
                         </form:form>
                     </div>
                   </div>
@@ -239,6 +333,7 @@ $("#method").on('mouseover', 'option' , function(e) {
                                     <input type="button" name="editCategory" value="Edit" class="btn btn-success" id="editCategory" onclick="EditCategory()"/>
                                 </div>
                             </div>
+                            
                             <div class="col-xs-6 col-xs-offset-3">
                                 <c:forEach var="term" items="${terms}" varStatus="contadorTerm">
                                     <div class="col-xs-4">
