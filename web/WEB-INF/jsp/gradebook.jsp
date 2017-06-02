@@ -144,10 +144,17 @@
                     <label>Term:</label>
                     <select id="term" onchange="reload()">
                         <c:forEach var="t" items="${terms}">
-                            <c:if test="${t.id == selectedterm}">
-                            <option selected="" value="${t.id}">${t.name}</option>
-                            </c:if>
                             <option value="${t.id}">${t.name}</option>
+                            <c:if test="${t.id == selectedterm}">
+<%--                            <option selected="" value="${t.id}">${t.name}</option>--%>
+                            <script>
+                                $(document).ready(function() {
+                                    $('#term option[value="${selectedterm}"]').attr('selected', 'selected');
+                                });
+                               
+                            </script>
+                            </c:if>
+                           
                             </c:forEach>
                     </select>
                     
