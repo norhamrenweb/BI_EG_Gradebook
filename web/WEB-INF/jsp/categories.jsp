@@ -69,7 +69,19 @@ $(function () {
     }else if($(this).is(":valid")){
         $(this).popover('destroy');
     }
-
+    var points;
+    var letraMin = $("#TextMinLetter").val();
+    var letraMax = $("#TextMaxLetter").val();
+    
+    var letters = [], i = letraMin.charCodeAt(0), j = letraMax.charCodeAt(0);
+                    for (; i <= j; ++i) {
+                        letters.push(String.fromCharCode(i));
+                    }   
+                    points = letters.length;
+    
+    var pointsMax = (points - 1);
+    $('#valMax').append('<label>Value</label><input type="text" class="form-control text-right" size="1" value="'+pointsMax+'" readonly>');
+    $('#valMin').append('<label>Value</label><input type="text" class="form-control text-right" size="1" value="0" readonly>');
   });
   $("#TextMinNumber").blur(function () {
     if ($(this).is(":invalid")) {
@@ -149,9 +161,9 @@ $(function () {
                 var numberMin = $("#TextMinNumber").val();
                 var numberMax = $("#TextMaxNumber").val();
                 
-                    var numbers = [], i = numberMin.charCodeAt(0), j = numberMax.charCodeAt(0);
-                    for (; i <= j; ++i) {
-                        numbers.push(String.fromCharCode(i));
+                    var numbers = [], i = numberMin, j = numberMax;
+                    for (i; i <= j; ++i) {
+                        numbers.push(i);
                     }   
                     range = numbers.toString();
             };
@@ -321,21 +333,45 @@ $(function () {
                                     </div>
                                     
                                     <div id="typeLetter" class="col-xs-6 hidden form-group form-inline">
-                                        <label>Min.</label>
-                                        <input type="text" id="TextMinLetter" data-title="You should enter letters caps or small from A - Z" class="form-control" placeholder="A" pattern="[a-zA-Z]{1,}" maxlength="1" size="1">
-                                        <label>Max.</label>
-                                        <input type="text" id="TextMaxLetter" data-title="You should enter letters caps or small from A - Z" class="form-control" placeholder="Z" pattern="[a-zA-Z]{1,}" maxlength="1" size="1">
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <label>from</label>
+                                                <input type="text" id="TextMinLetter" data-title="You should enter letters caps or small from A - Z" class="form-control text-right" placeholder="A" pattern="[a-zA-Z]{1,}" maxlength="1" size="1">
+                                            </div>
+                                            <div class="col-xs-6" id="valMax">
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                            <label>to</label>
+                                            <input type="text" id="TextMaxLetter" data-title="You should enter letters caps or small from A - Z" class="form-control text-right" placeholder="Z" pattern="[a-zA-Z]{1,}" maxlength="1" size="1">
+                                            </div>
+                                            <div class="col-xs-6" id="valMin">
+                                                
+                                            </div>
+                                        </div>
                                     </div>
-                                    
                                     <div id="typeNumber" class="col-xs-6 hidden form-group form-inline">
-                                        <label>Min.</label>
+                                        <label>from.</label>
                                         <input type="text" id="TextMinNumber" data-title="You should enter numbers from 0 - 99" class="form-control" placeholder="0" maxlength="2" pattern="[0-9]{1,}" size="2">
                                         <label>Max.</label>
                                         <input type="text" id="TextMaxNumber" data-title="You should enter numbers from 1 - 100" class="form-control" placeholder="100" maxlength="3" pattern="[0-9]{1,}" size="2">
+                                        <br>
+                                        
                                     </div>
                                     
                                 </div>
-                                <div class="col-xs-6">
+                                <div class="col-xs-3">
+                                    <label>Decial places</label>
+                                    <select class="form-control" id="decimalPlaces" >
+                                        <option value="0">Select decimal places</option>
+                                        <option value="0">0</option>
+                                        <option value="1">0.0</option>
+                                        <option value="2">0.00</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
                                     <c:forEach var="t" items="${terms}">
                                     <div class="col-xs-4">
                                         <label class="control-label">${t.name}</label>
