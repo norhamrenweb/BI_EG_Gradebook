@@ -69,7 +69,7 @@ var ajax;
         
 //ajax.onreadystatechange=funcionCallBackLessonsprogress;
  //       window.location.href = "/lessonprogress/loadRecords.htm?LessonsSelected="+LessonsSelected;
-       window.open("<c:url value="/lessonprogress/loadRecords.htm?LessonsSelected="/>"+LessonsSelected);
+       window.open("<c:url value="/studentpage/start.htm?studentid="/>"+LessonsSelected);
 //        ajax.open("POST","lessonprogress.htm?select6=loadRecords&LessonsSelected="+LessonsSelected,true);
 //        ajax.send("");
   };

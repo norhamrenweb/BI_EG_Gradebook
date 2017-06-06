@@ -119,6 +119,38 @@ $(function () {
                 $('#Term1editcategory').val(data[4]);
                 
             }
+             function saveeditCategory()
+            {
+                var name =  $("#nameeditcategory").val();
+                var description = $("#descriptioneditcategory").val();
+                var data = {
+                       name :  name,
+                       description : description
+                     };
+                $.ajax({
+                        type: "POST",
+                       url: "editCategory.htm",
+                        data: JSON.stringify(data),
+                        datatype:"json",
+                        contentType: "application/json",  
+
+                        success: function(data) {
+                            if(data !== ""){ // if true (1)
+                             setTimeout(function(){// wait for 5 secs(2)
+                                  location.reload(); // then reload the page.(3)
+                             }, 5000); 
+                          }
+                            
+                            //display(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                   console.log(xhr.responseText);
+                                   console.log(thrownError);
+                               }
+
+                    });  
+            }
                //AÑADE LOS Criterias al select que se va enviar
             function addCriteria()
             {
@@ -142,6 +174,7 @@ $(function () {
             var name = $("#namenewcategory").val();
             var description = $("#descriptionnewcat").val();
             var TypeGrading = $("#selectType option:selected").val();
+            var decimal = $("#decimalPlaces option:selected").val();
             var term_selected = '';
             $("input:checkbox[name=termCat]:checked").each(function(){
             if (this.checked) {
@@ -174,7 +207,8 @@ $(function () {
                        name :  name,
                        description : description,
                        gradetype : grades,
-                       term_ids: term_ids
+                       term_ids: term_ids,
+                       decimal: decimal
                      };
             $.ajax({
                         type: "POST",
@@ -430,7 +464,7 @@ $(function () {
                                     <input type="number" class="form-control" name="TXTnamenewmethod" id="weighteditcategory"  placeholder="0">
                                 </div>-->
                                 <div class="col-xs-2 center-block form-group paddingLabel">
-                                    <input type="button" name="editCategory" value="Edit" class="btn btn-success" id="editCategory" onclick="EditCategory()"/>
+                                    <input type="button" name="editCategory" value="Edit" class="btn btn-success" id="editCategory" onclick="saveeditCategory()"/>
                                 </div>
                             </div>
                             

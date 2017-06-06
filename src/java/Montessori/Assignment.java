@@ -20,7 +20,7 @@ public class Assignment {
     private String[] id;
     private String name;
 private String description;
-private Category obj;
+private Category category;
 private String start;
 private String finish;
 Connection cn;
@@ -41,12 +41,12 @@ Connection cn;
         this.finish = finish;
     }
 
-    public Category getObj() {
-        return obj;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setObj(Category obj) {
-        this.obj = obj;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getDescription() {

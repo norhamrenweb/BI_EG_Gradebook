@@ -135,7 +135,7 @@ public class CategoriesController {
         this.cn = dataSource.getConnection();
          Statement st = this.cn.createStatement();
           String[] catgid = hsr.getParameterValues("classid");
-          String consulta = "insert into category(name,description,weight,term_ids) values('"+category.getName()+"','"+category.getDescription()+"','"+category.getWeight()+"','";//pass,calc later after delivering to bedaya  
+          String consulta = "insert into category(name,description,term_ids) values('"+category.getName()+"','"+category.getDescription()+"','"+category.getTerm_ids()+"')";//pass,calc later after delivering to bedaya  
           st.executeUpdate(consulta,Statement.RETURN_GENERATED_KEYS);
         ResultSet rs = st.getGeneratedKeys();
        String catg_id = null;

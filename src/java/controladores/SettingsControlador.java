@@ -242,7 +242,7 @@ public class SettingsControlador extends MultiActionController{
               
                 eq.setId(i);
               eq.setName(rs1.getString("name"));
-              eq.setObj(obj);
+              eq.setCategory(obj);
                contents.add(eq);
             }   
               

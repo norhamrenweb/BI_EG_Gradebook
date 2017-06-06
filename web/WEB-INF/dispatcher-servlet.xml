@@ -50,7 +50,7 @@
         </bean>
     </property> 
     </bean>-->
-    <bean class="controladores.ProgressbyStudent" id="studentprog"/>
+    <bean class="controladores.StudentPageController" id="studentprog"/>
     <bean class="controladores.CreateSettingControlador" id="createsetting"/>
         <bean class="controladores.CreateLessonControlador" id="createlesson"/>
          <bean class="controladores.LessonsListControlador" id="lessonsList"/>
@@ -83,8 +83,7 @@
                  <prop key="gradebook.htm">gradebook</prop>
                  <prop key="progressbystudent.htm">studentprog</prop>  
                  <prop key="progressdetails.htm">studentprog</prop>
-                 <prop key="studentpage.htm">studentprog</prop> 
-                 <prop key="studentpage_1.htm">studentprog</prop> 
+                 <prop key="studentpage.htm">studentprog</prop>  
                  <prop key="assignments.htm">assignments</prop>
                  <prop key="categories.htm">categories</prop>
                  <prop key="parentpage.htm">parentpage</prop>

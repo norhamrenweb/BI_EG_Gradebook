@@ -117,9 +117,46 @@
             termSelected = $("#TermSelected").val();
             $("#CreateAssigTermSelected").val(termSelected);
         }
+        function editAssignment(){
+          var name = document.getElementById("nameEditassignment").value;
+    var dscrp = document.getElementById("descriptionEditassignment").value;
+    var start = document.getElementById("TXTdateStartedit").value;
+    var finish = document.getElementById("TXTdateEndedit").value;
+    var catid = document.getElementById("idcategoryedit").value;
+    var data = {
+               name :  name,
+               description :dscrp,
+                start : start,
+                 finish :  finish
+             };
+     $.ajax({
+                        type: "POST",
+                        url: "editAssign.htm?catid="+catid,
+                        data: JSON.stringify(data),
+                        datatype:"json",
+                        contentType: "application/json",  
+
+                        success: function(data) {
+                            if(data !== ""){ // if true (1)
+                             setTimeout(function(){// wait for 5 secs(2)
+                                  location.reload(); // then reload the page.(3)
+                             }, 5000); 
+                          }
+                            
+                            //display(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                                console.log(xhr.status);
+                                   console.log(xhr.responseText);
+                                   console.log(thrownError);
+                               }
+
+                    });    
+    
+    }
 function addAssigment(){
-    var name = document.getElementById("nameeditassignment").value;
-    var dscrp = document.getElementById("descriptioneditassignment").value;
+    var name = document.getElementById("nameNewAssignment").value;
+    var dscrp = document.getElementById("descriptionNewAssignment").value;
     var start = document.getElementById("TXTdateStart").value;
     var finish = document.getElementById("TXTdateEnd").value;
     var catid = document.getElementById("idcategory").value;
@@ -233,9 +270,9 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
       $('#divConfirmAssigment').addClass('hidden');
       $('#divDelAssigment').removeClass('hidden');
     }
-    CancelDelAssigment
+//    CancelDelAssigment
     function ConfirmDelAssigment(){
-       var name = document.getElementById("nameeditassignment").value;
+       var name = document.getElementById("namededitassignment").value;
        $.ajax({
                         type: "POST",
                         url: "saveAssign.htm?catid="+catid,
@@ -619,7 +656,7 @@ ${contador.index} - ${contadorG.index}
                                         <div class="col-xs-6 center-block form-group">
                                             <label class="control-label">Category</label>
                                              <input type="hidden" class="form-control" name="TXTidcategory" id="idcategory" value ="${category.id[0]}" readonly="">
-                                            <input type="text" class="form-control" name="TXTnamecategory" id="namecategory" value ="${category.name}" readonly="">
+                                            <input type="text" class="form-control" name="TXTnamecategory" id="nameaddassignment" value ="${category.name}" readonly="">
                                         </div>
                                         <div class="col-xs-6 center-block form-group">
                                             <label class="control-label">Term</label>
@@ -720,7 +757,7 @@ ${contador.index} - ${contadorG.index}
                                      <div class="col-xs-6 center-block form-group">
                                          <label class="control-label">Start Assigment</label>
                                             <div class='input-group date' id='dateStart'>
-                                                <input type='text' name="TXTdateStart" id="TXTEditdateStart" class="form-control"/>
+                                                <input type='text' name="TXTdateStartedit" id="TXTEditdateStart" class="form-control"/>
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
@@ -729,7 +766,7 @@ ${contador.index} - ${contadorG.index}
                                         <div class="col-xs-6 center-block form-group">
                                             <label class="control-label">End Assigment</label>
                                             <div class='input-group date' id='dateEnd'>       
-                                                <input type='text' name="TXTdateEnd" id="TXTEditdateEnd" class="form-control" />
+                                                <input type='text' name="TXTdateEnd" id="TXTEditdateEndedit" class="form-control" />
                                                 <span class="input-group-addon">
                                                     <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
@@ -746,7 +783,7 @@ ${contador.index} - ${contadorG.index}
                                 </fieldset>
                                 <fieldset>
                                 <div class="col-xs-6 center-block form-group text-right">
-                                    <input type="button" name="AddCategory" value="edit" data-dismiss="modal" class="btn btn-success" id="AddAssigment" data-target=".bs-example-modal-lg" onclick="editAssigment()"/>
+                                    <input type="button" name="AddCategory" value="edit" data-dismiss="modal" class="btn btn-success" id="AddAssigment" data-target=".bs-example-modal-lg" onclick="editAssignment()"/>
                                 </div>
                                 <div class="col-xs-6 center-block form-group text-right" id="divDelAssigment">
                                     <button type="button" name="DelAssigment" class="btn btn-danger" value="0" id="delAssigment" data-target=".bs-example-modal-lg" onclick="delAssigment()">
