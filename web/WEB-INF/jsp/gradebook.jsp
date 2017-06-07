@@ -163,10 +163,10 @@
                 <div class="col-xs-4">
                     <a href="<c:url value="/categories/loadCategories.htm?ClassSelected=${classid}"/>">Edit Categories</a>
                     <input type="hidden" class="form-control" name="TXTidcategory" id="idclass" value ="${classid}" readonly="">
-                        <div class="center-block">
+<!--                        <div class="center-block">
                             Categories
 <%--                            <input type="image" src="<c:url value="/recursos/img/iconos/Calendar-01.svg"/>" data-toggle="tooltip" data-placement="top" title="View calendar">--%>
-                        </div>
+                        </div>-->
                     </a>
                 </div>
             </div>
