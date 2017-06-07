@@ -8,6 +8,7 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
@@ -18,8 +19,31 @@
             var gradesPrevious = new Array();
             var ajax;
             
+            
            $(document).ready(function(){
-               
+            if  ($.isNumeric("a")  ){
+            var sizeGrades = ${fn:length(gradevalues)};
+            var pattern = '[${gradevalues[0]}-'+sizeGrades+']'; 
+
+            
+            $('.grade').attr(
+                    {
+                'pattern': pattern,
+                'title' : "values from 1 to 8"
+            });
+            }else{
+            var sizeGrades = "${gradevalues}";
+            var c = sizeGrades.replace(/,/gi, "|");
+            var pattern = c; 
+
+            
+            $('.grade').attr(
+                    {
+                'pattern': pattern,
+                'title' : "Letters from"+c[0]+" to"+c[5]+"a"
+            });  
+            };
+            
             var userLang = navigator.language || navigator.userLanguage;
         $('#dateStart').datetimepicker({
             format: 'YYYY-MM-DD',
@@ -100,7 +124,7 @@
                 $(".selectFaces").msDropdown();
                 //CREO UN ARRAY CON LOS VALORES INICIALES
                 
-                $('.unStyle').each(function(){ // loop in to the input's wrapper
+                $('.grade').each(function(){ // loop in to the input's wrapper
 
                     var obj = {
                     idStudent :  $(this).attr('data-idStudent'),
@@ -200,7 +224,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
             o = new Array();//{"items":[]}; // create an object with key items to hold array
         
                 
-           $('.unStyle').each(function(){ // loop in to the input's wrapper
+           $('.grade').each(function(){ // loop in to the input's wrapper
               
                var obj = {
                idStudent :  $(this).attr('data-idStudent'),
@@ -297,6 +321,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
 
                     });      
     }
+
         </script>
          <style>
             .attempted{
@@ -422,9 +447,9 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
                             <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
                             <th class="text-center" id="${assig.id[0]}">
                                 <div class="col-xs-12" id="nameAssig" data-description="${assig.description}" data-startdate="${assig.start}" data-finishdate="${assig.finish}">${assig.name}</div>
-                                <c:forEach var="crit" items="${criterias}">
+                                <%--<c:forEach var="crit" items="${criterias}">
                                     <div class="col-xs-6 celda">${crit.name}</div>
-                                </c:forEach>
+                                </c:forEach>--%>
                             </th>
                             </c:forEach>
 <!--                            <th></th>-->
@@ -438,8 +463,9 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
                             <c:forEach var="assig" items="${assignments}" varStatus="contadorAssig">
                                 <td class="text-center">
                                     <c:forEach var="critGrad" items="${criterias}" varStatus="contadorCrit">  
-                                        <div class="col-xs-6 celda">
-                                            <input data-idStudent="${stud.id_students}" data-idAssigment="${assig.id[0]}" data-idCriteria="${critGrad.id[0]}" class="unStyle" onchange="save()" type="number" width="100%" min="0" max="10" value="${grades[contadorStud.index][contadorAssig.index][contadorCrit.index]}"/>
+                                        <div class="col-xs-12 celda">
+
+                                            <input class="grade" data-idStudent="${stud.id_students}" data-idAssigment="${assig.id[0]}" data-idCriteria="${critGrad.id[0]}" onchange="save()" type="text" width="100%" value="${grades[contadorStud.index][contadorAssig.index][contadorCrit.index]}"/>
                                         </div>
                                     </c:forEach>
                                 </td>    
