@@ -21,7 +21,7 @@
             
             
            $(document).ready(function(){
-            if  ($.isNumeric("a")  ){
+            if  ($.isNumeric(${gradevalues[0]})  ){
             var sizeGrades = ${fn:length(gradevalues)};
             var pattern = '[${gradevalues[0]}-'+sizeGrades+']'; 
 
@@ -222,20 +222,32 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
     function save()
     {
             o = new Array();//{"items":[]}; // create an object with key items to hold array
-        
+            var hayInvalid = 0;
+            
                 
            $('.grade').each(function(){ // loop in to the input's wrapper
-              
+               if ($(this).is(":invalid")) {
+                    alert("Invalid value");
+                    hayInvalid = hayInvalid + 1;
+                }
+               
                var obj = {
                idStudent :  $(this).attr('data-idStudent'),
                assignmentid :  $(this).attr('data-idAssigment'),
                idCrit :  $(this).attr('data-idCriteria'),// place the url in a new object
                val : $(this).val() // place the name in a new object
              };
+
              o.push(obj);
 
            });
-
+            
+            if (hayInvalid === 0) {
+                 $('#saveGrades').prop('disabled', false);
+                  
+                }else{
+                 $('#saveGrades').prop('disabled', true); 
+                }    
           // $('#console').text(JSON.stringify(o));// strigify to show
            gradesModi = JSON.stringify(o);
        
@@ -260,11 +272,6 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
             
 //        }
         
-
-
-       
-
-
              $.ajax({
                         type: "POST",
                         url: "saveRecords.htm",
@@ -390,10 +397,11 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
                 background-color: red !important;
             }
             .flotante {
-                display:scroll;
-                position:fixed;
-                bottom:200px;
-                right:200px;
+                position: sticky;
+            }
+            .contenedorSave
+            {
+                padding-top: 200px;
             }
             .unStyle
             {
@@ -407,7 +415,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
         </style>
     </head>
     <body>
-      <button id="saveGrades" class="flotante" onclick="sendgrades()"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
+      
             
         <div class="container">
             <div class="row" id="console">
@@ -438,7 +446,7 @@ var o = new Array();//{"items":[]}; // create an object with key items to hold a
             <div class="col-xs-12">
             <hr> 
             </div>
-            <div class="col-xs-12" id="divTableGradebook">
+            <div class="col-xs-10" id="divTableGradebook">
                 <table id="tableAssignments" class="display cell-border" cellspacing="0">
                     <thead>
                         <tr>
@@ -660,12 +668,10 @@ ${contador.index} - ${contadorG.index}
                     
 
                 </table>
-
             </div>
-                    <div class="col-xs-12">          
-                        
-         
-    </div> 
+            <div class="col-xs-2 contenedorSave">
+                <button id="saveGrades" class="unStyle" onclick="sendgrades()"><img src="<c:url value="/recursos/img/iconos/saveGrades.svg"/>"></button>
+            </div> 
         </div>      
 
             <!-- Modal Create Assigment-->

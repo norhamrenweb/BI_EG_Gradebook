@@ -116,7 +116,29 @@ $(function () {
                 $('#nameeditcategory').val(data[1]);
                 $('#descriptioneditcategory').val(data[2]);
                 $('#weighteditcategory').val(data[3]);
-                $('#Term1editcategory').val(data[4]);
+                                
+                var td1 = '<html><body><table><tr><td>'+data[4]+'</td></tr></table></body></html>',
+                input1 = $.parseHTML(td1),
+                inputT1 = $(input1).find(':input');
+                
+                var td2 = '<html><body><table><tr><td>'+data[5]+'</td></tr></table></body></html>',
+                input2 = $.parseHTML(td2),
+                inputT2 = $(input2).find(':input');
+                
+                var td3 = '<html><body><table><tr><td>'+data[6]+'</td></tr></table></body></html>',
+                input3 = $.parseHTML(td3),
+                inputT3 = $(input3).find(':input');
+        
+                if(inputT1.is(':checked')){
+                    $('#Term1editcategory').prop('checked', true);
+                }
+                 if(inputT2.is(':checked')){
+                    $('#Term2editcategory').prop('checked', true);
+                }
+                 if(inputT3.is(':checked')){
+                    $('#Term3editcategory').prop('checked', true);
+                }
+
                 
             }
              function saveeditCategory()
@@ -472,7 +494,7 @@ $(function () {
                                 <c:forEach var="term" items="${terms}" varStatus="contadorTerm">
                                     <div class="col-xs-4">
                                             <label class="control-label">${term.name}</label>
-                                            <input type="checkbox" name="${term.id}" class="checkbox-inline checkbox-success">
+                                            <input type="checkbox" id="Term${term.id}editcategory" name="${term.id}" class="checkbox-inline checkbox-success">
                                     </div>
                                 </c:forEach>
 <!--                                <div class="col-xs-4">
