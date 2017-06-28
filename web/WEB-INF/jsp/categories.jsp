@@ -360,64 +360,7 @@ $(function () {
                                         <input type="button" name="AddCategory" value="save" class="btn btn-success" id="Addcategory" onclick="createCategory()"/>
                                     </div>
                                 </div>
-                                <div class="col-xs-6 form-inline">
-                                    <script>
-                                    function selecType()
-                                        {
-                                            TypeSelected = $('#selectType').val();
-                                            if(TypeSelected === '1'){
-                                                $('#typeNumber').addClass('hidden');
-                                                $('#typeLetter').removeClass('hidden');
-                                            }else if(TypeSelected === '2'){
-                                                $('#typeLetter').addClass('hidden');
-                                                $('#typeNumber').removeClass('hidden');
-                                            }else{
-                                                $('#typeLetter').addClass('hidden');
-                                                $('#typeNumber').addClass('hidden');
-                                            }
-                                            
-                                        }
-                                      
-                                    </script>
-                                    <div class="col-xs-6">
-                                    <label>Type</label>
-                                    <select class="form-control" id="selectType" onchange="selecType()">
-                                        <option value="0">Select grading type</option>
-                                        <option value="1">Letter</option>
-                                        <option value="2">Number</option>
-                                    </select>
-                                    </div>
-                                    
-                                    <div id="typeLetter" class="col-xs-6 hidden form-group form-inline">
-                                        <div class="row">
-                                            <div class="col-xs-6">
-                                                <label>from</label>
-                                                <input type="text" id="TextMinLetter" data-title="You should enter letters caps or small from A - Z" class="form-control text-right" placeholder="A" pattern="[a-zA-Z]{1,}" maxlength="1" size="1">
-                                            </div>
-                                            <div class="col-xs-6" id="valMax">
-                                                
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-xs-6">
-                                            <label>to</label>
-                                            <input type="text" id="TextMaxLetter" data-title="You should enter letters caps or small from A - Z" class="form-control text-right" placeholder="Z" pattern="[a-zA-Z]{1,}" maxlength="1" size="1">
-                                            </div>
-                                            <div class="col-xs-6" id="valMin">
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="typeNumber" class="col-xs-6 hidden form-group form-inline">
-                                        <label>from.</label>
-                                        <input type="text" id="TextMinNumber" data-title="You should enter numbers from 0 - 99" class="form-control" placeholder="0" maxlength="2" pattern="[0-9]{1,}" size="2">
-                                        <label>Max.</label>
-                                        <input type="text" id="TextMaxNumber" data-title="You should enter numbers from 1 - 100" class="form-control" placeholder="100" maxlength="3" pattern="[0-9]{1,}" size="2">
-                                        <br>
-                                        
-                                    </div>
-                                    
-                                </div>
+                                
                                 <div class="col-xs-3">
                                     <label>Decial places</label>
                                     <select class="form-control" id="decimalPlaces" >
